@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.views
+package com.projects.vo1.customvk.views.utils
 
 import android.R.id.edit
 import android.content.Context
