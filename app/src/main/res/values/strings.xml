@@ -9,4 +9,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="menu.frineds">Друзья</string>
+    <string name="menu.profile">Профиль</string>
+    <string name="menu.conversations">Диалоги</string>
+    <string name="menu.section.account">Аккаунт</string>
+    <string name="menu.account.logout">Выход</string>
+    <string name="tabname.all">Все</string>
+    <string name="tabname.online">Онлайн</string>
 </resources>

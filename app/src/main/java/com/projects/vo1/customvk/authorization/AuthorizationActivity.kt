@@ -1,9 +1,10 @@
-package com.projects.vo1.customvk.views.activities
+package com.projects.vo1.customvk.authorization
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebView
 import com.projects.vo1.customvk.R
+import com.projects.vo1.customvk.activities.MainActivity
 import com.projects.vo1.customvk.views.utils.AuthorizationCallback
 import com.projects.vo1.customvk.views.utils.SharedPrefs
 import com.projects.vo1.customvk.views.utils.VkWebViewClient

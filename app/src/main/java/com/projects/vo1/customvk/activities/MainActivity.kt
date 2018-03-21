@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.views.activities
+package com.projects.vo1.customvk.activities
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,8 @@ import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.views.utils.SharedPrefs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import com.projects.vo1.customvk.friends.FragmentFriends
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,8 +41,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-
         Snackbar.make(fab, (SharedPrefs()::getToken)(this).toString(), Snackbar.LENGTH_LONG).show()
+
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.fragment_container, FragmentFriends.newInstance(), "FragmentFriends")
+                .commit()
     }
 
     override fun onBackPressed() {
@@ -53,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+//        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
@@ -70,22 +76,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
+
+            R.id.menu_profile -> {
 
             }
-            R.id.nav_slideshow -> {
+            R.id.menu_friends -> {
 
             }
-            R.id.nav_manage -> {
+            R.id.menu_conversations -> {
 
             }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
+            R.id.menu_account_logout -> {
 
             }
         }

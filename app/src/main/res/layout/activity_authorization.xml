@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projects.vo1.customvk.views.activities.AuthorizationActivity">
+    tools:context="com.projects.vo1.customvk.authorization.AuthorizationActivity">
 
 
     <WebView
