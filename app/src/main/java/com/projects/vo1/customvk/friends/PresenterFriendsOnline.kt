@@ -2,13 +2,8 @@ package com.projects.vo1.customvk.friends
 
 import android.util.Log
 import com.projects.vo1.customvk.data.friends.FriendsRepository
-import com.projects.vo1.customvk.model.Friends
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import io.reactivex.internal.disposables.DisposableHelper.dispose
-import io.reactivex.disposables.Disposable
-import rx.Observer
 
 
 /**
@@ -20,9 +15,8 @@ class PresenterFriendsOnline(private val friendsRepository: FriendsRepository,
 
     fun getOnlineFriends() {
         friendsRepository.getOnline()
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .blockingFirst()
-                .forEach { friend: Friends -> Log.i("response: ", friend.toString()) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({ t: Friends? ->  Log.i("friends online: ", t.toString())})
     }
 }

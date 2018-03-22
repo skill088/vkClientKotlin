@@ -1,6 +1,6 @@
 package com.projects.vo1.customvk.data.api.friends
 
-import com.projects.vo1.customvk.model.Friends
+import com.projects.vo1.customvk.friends.Friends
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -10,6 +10,6 @@ import retrofit2.http.Query
  */
 interface ApiFriends {
 
-    @GET("friends.getOnline?order=hints?v=5.73")
-    fun getOnline(@Query("access_token") token: String): Observable<List<Friends>>
+    @GET("friends.getOnline?order=hints&v=5.73")
+    fun getOnline(@Query("access_token") token: String): Observable<Friends>
 }

@@ -26,5 +26,10 @@ class FragmentFriendsTabOnline : Fragment(), FriendsOnlineView {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val presenter = PresenterFriendsOnline(
+                FriendsRepository(ApiInterfaceProvider.getApiInterface(ApiFriends::class.java)
+                        , activity), this)
+        presenter.getOnlineFriends()
     }
 }

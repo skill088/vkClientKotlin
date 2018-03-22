@@ -3,15 +3,10 @@ package com.projects.vo1.customvk.friends
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
-import com.projects.vo1.customvk.model.Friends
-import com.projects.vo1.customvk.nework.ApiInterfaceProvider
-import com.projects.vo1.customvk.data.api.friends.ApiFriends
-import com.projects.vo1.customvk.data.friends.FriendsRepository
 
 import kotlinx.android.synthetic.main.fragment_friends.*
 
