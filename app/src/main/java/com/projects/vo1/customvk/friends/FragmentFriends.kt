@@ -20,15 +20,11 @@ class FragmentFriends : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view =  inflater?.inflate(R.layout.fragment_friends, container, false)
-        val activity = activity as AppCompatActivity
-        activity.supportActionBar?.title  = resources.getString(R.string.menu_frineds)
-
-        return view
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_friends, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureTabLayout()
     }
@@ -36,7 +32,7 @@ class FragmentFriends : Fragment() {
 
 
     private fun configureTabLayout() {
-        pager.adapter = PagerAdapterFriends(fragmentManager)
+        pager.adapter = PagerAdapterFriends(fragmentManager!!)
         tab_layout.setupWithViewPager(pager)
     }
 

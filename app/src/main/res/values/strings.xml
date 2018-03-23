@@ -16,4 +16,7 @@
     <string name="menu.account.logout">Выход</string>
     <string name="tabname.all">Все</string>
     <string name="tabname.online">Онлайн</string>
+
+    <!--friends adapter-->
+    <string name="friend.name" formatted="false">%s %s</string>
 </resources>

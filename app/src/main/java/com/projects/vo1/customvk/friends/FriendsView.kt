@@ -5,5 +5,8 @@ import android.view.View
 /**
  * Created by Admin on 21.03.2018.
  */
-interface FriendsOnlineView {
+interface FriendsView {
+
+    fun showFriends(friends: List<FriendInfo>)
+    fun hideSwipeRefresh()
 }

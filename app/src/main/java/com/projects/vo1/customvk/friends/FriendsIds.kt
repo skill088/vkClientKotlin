@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Admin on 21.03.2018.
  */
-class Friends {
+class FriendsIds {
 
     @SerializedName("response")
     @Expose
@@ -15,7 +15,7 @@ class Friends {
 
     override fun toString(): String {
         var str = ""
-        idList?.forEach { i ->  str += i.toString() + "\n"}
+        idList?.forEach { i ->  str += i.toString() + ","}
         return str
     }
 }

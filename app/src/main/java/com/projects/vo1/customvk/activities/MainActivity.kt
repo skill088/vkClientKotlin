@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         Snackbar.make(fab, (SharedPrefs()::getToken)(this).toString(), Snackbar.LENGTH_LONG).show()
 
+        supportActionBar?.title = resources.getString(R.string.menu_frineds)
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.fragment_container, FragmentFriends.newInstance(), "FragmentFriends")
