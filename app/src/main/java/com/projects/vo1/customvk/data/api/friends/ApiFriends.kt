@@ -12,7 +12,7 @@ interface ApiFriends {
 
     @GET("friends.get?order=name&count=10&fields=photo_100&v=5.73")
     fun getFriends(@Query("access_token") token: String,
-                   @Query("offset") offset: Int): Observable<FriendsIds>
+                   @Query("offset") offset: Int): Observable<ApiResponseFriendsAll>
 
     @GET("friends.getOnline?order=hints&v=5.73")
     fun getOnline(@Query("access_token") token: String): Observable<FriendsIds>

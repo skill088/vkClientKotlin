@@ -18,7 +18,7 @@ class FriendsRepositoryImpl(private val apiFriends: ApiFriends, val context: Con
     private val token: String? = PreferenceManager.getDefaultSharedPreferences(context)
             .getString("TOKEN", null)
 
-    override fun getAll(offset: Int): Observable<FriendsIds> {
+    override fun getAll(offset: Int): Observable<ApiResponseFriendsAll> {
         return apiFriends.getFriends(token?: null.toString(), offset)
     }
 

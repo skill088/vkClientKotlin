@@ -14,7 +14,6 @@ class PresenterAllFriends(private val friendsRepository: FriendsRepositoryImpl,
     fun getFriends() {
         compositeDisposable.add(
             friendsRepository.getAll(0)
-                .flatMap { ids ->  friendsRepository.getAllInfo(ids.toString())}
                 .flatMap { infos -> Observable.fromIterable(infos.response?.items) }
                 .map { friend -> friendsList.add(friend) }
                 .subscribeOn(Schedulers.io())

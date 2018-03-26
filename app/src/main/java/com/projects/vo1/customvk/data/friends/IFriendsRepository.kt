@@ -8,7 +8,7 @@ import io.reactivex.Observable
 
 interface IFriendsRepository {
 
-    fun getAll(offset: Int): Observable<FriendsIds>
+    fun getAll(offset: Int): Observable<ApiResponseFriendsAll>
     fun getOnline(): Observable<FriendsIds>
     fun getOnlineInfo(ids: String): Observable<ApiResponseObject<List<FriendInfo>>>
     fun getAllInfo(ids: String): Observable<ApiResponseFriendsAll>
