@@ -6,10 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-
-/**
- * Created by Admin on 21.03.2018.
- */
 class PresenterFriendsOnline(private val friendsRepository: FriendsRepositoryImpl,
                              private val view: FriendsView) : BasePresenter() {
 
@@ -17,7 +13,7 @@ class PresenterFriendsOnline(private val friendsRepository: FriendsRepositoryImp
 
     fun getOnlineFriends() {
         compositeDisposable.add(
-                friendsRepository.getOnline()
+                friendsRepository.getOnline(0)
                     .flatMap { ids ->  friendsRepository.getOnlineInfo(ids.toString())}
                     .flatMap { infos -> Observable.fromIterable(infos.response) }
                     .map { friend -> friendsList.add(friend) }
@@ -30,6 +26,20 @@ class PresenterFriendsOnline(private val friendsRepository: FriendsRepositoryImp
                         })
                     .subscribe {  }
         )
+    }
+
+    fun loadMore(offset: Int) {
+        friendsList.clear()
+        friendsRepository.getOnline(offset)
+                .flatMap { ids ->  friendsRepository.getOnlineInfo(ids.toString())}
+                .flatMap { infos -> Observable.fromIterable(infos.response) }
+                .map { friend -> friendsList.add(friend) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete {
+                    view.showMore(friendsList)
+                }
+                .subscribe()
     }
 
     fun refresh() {

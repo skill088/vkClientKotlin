@@ -17,16 +17,31 @@ class PresenterAllFriends(private val friendsRepository: FriendsRepositoryImpl,
                 .flatMap { infos -> Observable.fromIterable(infos.response?.items) }
                 .map { friend -> friendsList.add(friend) }
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).doOnComplete(
-                    {
-                        view.showFriends(friendsList)
-                        view.hideSwipeRefresh()
-                    })
+                .observeOn(AndroidSchedulers.mainThread())
+                    .doOnComplete(
+                        {
+                            view.showFriends(friendsList)
+                            view.hideSwipeRefresh()
+                        })
                 .subscribe()
         )
     }
 
+    fun loadMore(offset: Int) {
+        friendsList.clear()
+        friendsRepository.getAll(offset)
+                .flatMap { infos -> Observable.fromIterable(infos.response?.items) }
+                .map { friend -> friendsList.add(friend) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete {
+                    view.showMore(friendsList)
+                }
+                .subscribe()
+    }
+
     fun refresh() {
+        clearCompositeDesposable()
         friendsList.clear()
         getFriends()
     }

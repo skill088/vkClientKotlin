@@ -1,7 +1,6 @@
 package com.projects.vo1.customvk.friends
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -13,17 +12,14 @@ import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.nework.ApiInterfaceProvider
 import kotlinx.android.synthetic.main.fragment_tab_friends.*
-import android.widget.Toast
-import com.projects.vo1.customvk.activities.MainActivity
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
-
 
 
 class FragmentFriendsTabAll : Fragment(), FriendsView {
 
-    private var adapter: AdapterFriendsTemp? = null
+    private var adapter: AdapterFriends? = null
     private var presenter: PresenterAllFriends? = null
-    var tempList = mutableListOf<FriendInfo>()
+    private var list = mutableListOf<FriendInfo>()
 
     companion object {
 
@@ -44,7 +40,7 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
         val layoutManager = LinearLayoutManager(context)
         friends_recycler_view.layoutManager = layoutManager
 
-        adapter = AdapterFriendsTemp(friends_recycler_view)
+        adapter = AdapterFriends(friends_recycler_view, list)
         friends_recycler_view.adapter = adapter
 
         presenter = PresenterAllFriends(
@@ -52,7 +48,6 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
                         , activity!!.applicationContext), this)
         presenter?.getFriends()
         setAdapterBehaviour()
-
     }
 
     override fun onStop() {
@@ -61,37 +56,41 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
     }
 
     override fun hideSwipeRefresh() {
-        if  (swipe_refresh.isRefreshing)
+        if (swipe_refresh.isRefreshing)
             swipe_refresh.isRefreshing = false
     }
 
-    override fun showFriends(friends: List<FriendInfo>) {
-        tempList.clear()
-        adapter?.setList(friends)
-        tempList.addAll(friends)
+    override fun showFriends(friends: MutableList<FriendInfo>) {
+        list.addAll(friends)
+        adapter?.notifyDataSetChanged()
     }
 
     private fun setSwipeRefreshBehaviour() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.colorAccent))
         swipe_refresh.setOnRefreshListener {
+            list.clear()
+//            adapter?.notifyItemRangeRemoved(0, adapter?.itemCount!!)
+            adapter?.notifyDataSetChanged()
             presenter?.refresh()
         }
     }
 
-    fun setAdapterBehaviour() {
+    private fun setAdapterBehaviour() {
 
-        //set load more listener for the RecyclerView adapter
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
             override fun onLoadMore() {
-                if (tempList.size <= 20) {
-                    tempList.add(FriendInfo())
-                    adapter?.notifyItemInserted(tempList.size - 1)
-                } else {
-                    Snackbar.make(friends_recycler_view, "Data is loading", Snackbar.LENGTH_SHORT)
-                            .show()
-                    Toast.makeText(activity, "Loading data completed", Toast.LENGTH_SHORT).show()
-                }
+                list.add(FriendInfo())
+                adapter?.notifyItemInserted(list.size - 1)
+                presenter?.loadMore(adapter?.itemCount!!)
             }
         })
+    }
+
+    override fun showMore(friendsList: MutableList<FriendInfo>) {
+        list.removeAt(list.size - 1)
+        adapter?.notifyItemRemoved(list.size)
+        list.addAll(friendsList)
+        adapter?.setLoaded()
+        adapter?.notifyItemRangeInserted(list.size, 10)
     }
 }

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-        Snackbar.make(fab, (SharedPrefs()::getToken)(this).toString(), Snackbar.LENGTH_LONG).show()
+//        Snackbar.make(fab, (SharedPrefs()::getToken)(this).toString(), Snackbar.LENGTH_LONG).show()
 
         supportActionBar?.title = resources.getString(R.string.menu_frineds)
         supportFragmentManager
