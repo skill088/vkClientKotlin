@@ -3,6 +3,8 @@ package com.projects.vo1.customvk.friends
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import com.projects.vo1.customvk.friends.all.FragmentFriendsTabAll
+import com.projects.vo1.customvk.friends.online.FragmentFriendsTabOnline
 
 /**
  * Created by Admin on 21.03.2018.

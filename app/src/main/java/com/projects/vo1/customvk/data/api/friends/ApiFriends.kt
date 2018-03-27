@@ -2,8 +2,8 @@ package com.projects.vo1.customvk.data.api.friends
 
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsIds
-import com.projects.vo1.customvk.model.ApiResponseList
-import com.projects.vo1.customvk.model.ApiResponseObject
+import com.projects.vo1.customvk.data.nework.model_api_response.ApiResponseList
+import com.projects.vo1.customvk.data.nework.model_api_response.ApiResponseObject
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query

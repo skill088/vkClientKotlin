@@ -20,7 +20,11 @@ class FragmentFriends : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_friends, container, false)
     }
 
@@ -28,7 +32,6 @@ class FragmentFriends : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         configureTabLayout()
     }
-
 
 
     private fun configureTabLayout() {

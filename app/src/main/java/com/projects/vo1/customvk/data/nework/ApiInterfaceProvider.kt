@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.nework
+package com.projects.vo1.customvk.data.nework
 
 import android.util.Log
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -26,13 +26,6 @@ object ApiInterfaceProvider {
             .build()
 
     fun <T> getApiInterface(_class: Class<T>): T {
-
-//        if (BuildConfig.DEBUG) {
-//            val logging = HttpLoggingInterceptor()
-//            logging.level = HttpLoggingInterceptor.Level.BODY
-//            httpClient.addInterceptor(logging)
-//        }
-
         return retrofit.create(_class)
     }
 }

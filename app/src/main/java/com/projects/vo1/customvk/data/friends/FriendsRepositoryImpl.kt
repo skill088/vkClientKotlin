@@ -6,8 +6,7 @@ import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.api.friends.ApiResponseFriendsAll
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsIds
-import com.projects.vo1.customvk.model.ApiResponseList
-import com.projects.vo1.customvk.model.ApiResponseObject
+import com.projects.vo1.customvk.data.nework.model_api_response.ApiResponseObject
 import io.reactivex.Observable
 
 /**

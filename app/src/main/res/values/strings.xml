@@ -19,4 +19,9 @@
 
     <!--friends adapter-->
     <string name="friend.name" formatted="false">%s %s</string>
+    <string name="ContentDescription.userAvatar">Аватар пользователя</string>
+
+    <!--Profile user-->
+    <string name="user.bdate" formatted="false">Дата рождения: %s</string>
+    <string name="user.city" formatted="false">Город: %s</string>
 </resources>

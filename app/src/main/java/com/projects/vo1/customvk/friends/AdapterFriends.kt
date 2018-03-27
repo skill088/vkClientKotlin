@@ -14,7 +14,8 @@ import com.bumptech.glide.request.RequestOptions
 import android.support.v7.widget.LinearLayoutManager
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 
-class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<FriendInfo>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<FriendInfo>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
     private var onLoadMoreListener: OnLoadMoreListener? = null
@@ -22,6 +23,8 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
     private val visibleThreshold = 3
     private var lastVisibleItem = 0
     private var totalItemCount = 0
+
+    private var callback: FriendInfoCallback? = null
 
     init {
         val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -43,13 +46,17 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_ITEM -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.friends_list_item,
-                        parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(
+                    R.layout.friends_list_item,
+                    parent, false
+                )
                 FriendHolder(view)
             }
             else -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_loading,
-                        parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_loading,
+                    parent, false
+                )
                 LoadingViewHolder(view)
             }
         }
@@ -61,16 +68,26 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val context = holder.itemView
+
         if (holder is FriendHolder) {
             val friend = list[position]
-            holder.friendName.text = context.resources.getString(R.string.friend_name,
-                    friend.firstName, friend.lastName)
+
+            holder.itemView.setOnClickListener(View.OnClickListener {
+                callback?.onClick(friend.id.toString())
+            })
+
+            holder.friendName.text = context.resources.getString(
+                R.string.friend_name,
+                friend.firstName, friend.lastName
+            )
             Glide.with(context)
-                    .setDefaultRequestOptions(RequestOptions()
-                            .format(DecodeFormat.PREFER_ARGB_8888)
-                            .dontAnimate())
-                    .load(friend.photo)
-                    .into(holder.friendAvatar)
+                .setDefaultRequestOptions(
+                    RequestOptions()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .dontAnimate()
+                )
+                .load(friend.photo)
+                .into(holder.friendAvatar)
         } else if (holder is LoadingViewHolder) {
             holder.progressBar.isIndeterminate = true
         }
@@ -86,6 +103,10 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
 
     fun setLoaded() {
         isLoading = false
+    }
+
+    fun setOnClickListener(listener: FriendInfoCallback) {
+        callback = listener
     }
 
     private class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {

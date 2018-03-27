@@ -1,6 +1,5 @@
-package com.projects.vo1.customvk.model
+package com.projects.vo1.customvk.data.nework.model_api_response
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 open class ApiResponseList<T>(

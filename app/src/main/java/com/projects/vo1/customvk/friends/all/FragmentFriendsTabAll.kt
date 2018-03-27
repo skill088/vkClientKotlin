@@ -1,30 +1,35 @@
-package com.projects.vo1.customvk.friends
+package com.projects.vo1.customvk.friends.all
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
-import com.projects.vo1.customvk.nework.ApiInterfaceProvider
-import android.support.v7.widget.LinearLayoutManager
-import com.projects.vo1.customvk.utils.OnLoadMoreListener
+import com.projects.vo1.customvk.data.nework.ApiInterfaceProvider
+import com.projects.vo1.customvk.friends.AdapterFriends
+import com.projects.vo1.customvk.friends.FriendInfo
+import com.projects.vo1.customvk.friends.FriendInfoCallback
+import com.projects.vo1.customvk.friends.FriendsView
+import com.projects.vo1.customvk.proffile.FragmentProfile
 import kotlinx.android.synthetic.main.fragment_tab_friends.*
+import com.projects.vo1.customvk.utils.OnLoadMoreListener
 
 
-class FragmentFriendsTabOnline : Fragment(), FriendsView {
+class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
 
     private var adapter: AdapterFriends? = null
-    private var presenter: PresenterFriendsOnline? = null
+    private var presenter: PresenterAllFriends? = null
     private var list = mutableListOf<FriendInfo>()
 
     companion object {
 
-        fun newInstance(): FragmentFriendsTabOnline {
-            return FragmentFriendsTabOnline()
+        fun newInstance(): FragmentFriendsTabAll {
+            return FragmentFriendsTabAll()
         }
     }
 
@@ -41,13 +46,29 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         friends_recycler_view.layoutManager = layoutManager
 
         adapter = AdapterFriends(friends_recycler_view, list)
-        setAdapterBehaviour()
+        adapter?.setOnClickListener(this)
         friends_recycler_view.adapter = adapter
 
-        presenter = PresenterFriendsOnline(
-                FriendsRepositoryImpl(ApiInterfaceProvider.getApiInterface(ApiFriends::class.java)
-                        , activity!!.applicationContext), this)
-        presenter?.getOnlineFriends()
+        presenter = PresenterAllFriends(
+            FriendsRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(ApiFriends::class.java)
+                , activity!!.applicationContext
+            ), this
+        )
+        presenter?.getFriends()
+        setAdapterBehaviour()
+    }
+
+
+
+    override fun onStop() {
+        super.onStop()
+        presenter?.clearCompositeDesposable()
+    }
+
+    override fun hideSwipeRefresh() {
+        if (swipe_refresh.isRefreshing)
+            swipe_refresh.isRefreshing = false
     }
 
     override fun showFriends(friends: MutableList<FriendInfo>) {
@@ -55,9 +76,13 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         adapter?.notifyDataSetChanged()
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter?.clearCompositeDesposable()
+    override fun onClick(id: String?) {
+//        activity?.supportFragmentManager
+//            ?.beginTransaction()
+////            ?.replace(R.id.fragment_container, FragmentProfile.newInstance(id), "ProfileDetails")
+//            ?.attach(FragmentProfile.newInstance(id))
+//            ?.addToBackStack("")
+//            ?.commit()
     }
 
     private fun setSwipeRefreshBehaviour() {
@@ -70,19 +95,6 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         }
     }
 
-    override fun hideSwipeRefresh() {
-        if  (swipe_refresh.isRefreshing)
-            swipe_refresh.isRefreshing = false
-    }
-
-    override fun showMore(friendsList: MutableList<FriendInfo>) {
-        list.removeAt(list.size - 1)
-        adapter?.notifyItemRemoved(list.size)
-        list.addAll(friendsList)
-        adapter?.setLoaded()
-        adapter?.notifyItemRangeInserted(list.size,  10)
-    }
-
     private fun setAdapterBehaviour() {
 
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
@@ -92,5 +104,13 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
                 presenter?.loadMore(adapter?.itemCount!!)
             }
         })
+    }
+
+    override fun showMore(friendsList: MutableList<FriendInfo>) {
+        list.removeAt(list.size - 1)
+        adapter?.notifyItemRemoved(list.size)
+        list.addAll(friendsList)
+        adapter?.setLoaded()
+        adapter?.notifyItemRangeInserted(list.size, 10)
     }
 }

@@ -1,30 +1,33 @@
-package com.projects.vo1.customvk.friends
+package com.projects.vo1.customvk.friends.online
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
-import com.projects.vo1.customvk.nework.ApiInterfaceProvider
-import kotlinx.android.synthetic.main.fragment_tab_friends.*
+import com.projects.vo1.customvk.data.nework.ApiInterfaceProvider
+import android.support.v7.widget.LinearLayoutManager
+import com.projects.vo1.customvk.friends.AdapterFriends
+import com.projects.vo1.customvk.friends.FriendInfo
+import com.projects.vo1.customvk.friends.FriendsView
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
+import kotlinx.android.synthetic.main.fragment_tab_friends.*
 
 
-class FragmentFriendsTabAll : Fragment(), FriendsView {
+class FragmentFriendsTabOnline : Fragment(), FriendsView {
 
     private var adapter: AdapterFriends? = null
-    private var presenter: PresenterAllFriends? = null
+    private var presenter: PresenterFriendsOnline? = null
     private var list = mutableListOf<FriendInfo>()
 
     companion object {
 
-        fun newInstance(): FragmentFriendsTabAll {
-            return FragmentFriendsTabAll()
+        fun newInstance(): FragmentFriendsTabOnline {
+            return FragmentFriendsTabOnline()
         }
     }
 
@@ -41,28 +44,26 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
         friends_recycler_view.layoutManager = layoutManager
 
         adapter = AdapterFriends(friends_recycler_view, list)
+        setAdapterBehaviour()
         friends_recycler_view.adapter = adapter
 
-        presenter = PresenterAllFriends(
-                FriendsRepositoryImpl(ApiInterfaceProvider.getApiInterface(ApiFriends::class.java)
-                        , activity!!.applicationContext), this)
-        presenter?.getFriends()
-        setAdapterBehaviour()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter?.clearCompositeDesposable()
-    }
-
-    override fun hideSwipeRefresh() {
-        if (swipe_refresh.isRefreshing)
-            swipe_refresh.isRefreshing = false
+        presenter = PresenterFriendsOnline(
+            FriendsRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(ApiFriends::class.java)
+                , activity!!.applicationContext
+            ), this
+        )
+        presenter?.getOnlineFriends()
     }
 
     override fun showFriends(friends: MutableList<FriendInfo>) {
         list.addAll(friends)
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter?.clearCompositeDesposable()
     }
 
     private fun setSwipeRefreshBehaviour() {
@@ -75,6 +76,19 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
         }
     }
 
+    override fun hideSwipeRefresh() {
+        if  (swipe_refresh.isRefreshing)
+            swipe_refresh.isRefreshing = false
+    }
+
+    override fun showMore(friendsList: MutableList<FriendInfo>) {
+        list.removeAt(list.size - 1)
+        adapter?.notifyItemRemoved(list.size)
+        list.addAll(friendsList)
+        adapter?.setLoaded()
+        adapter?.notifyItemRangeInserted(list.size,  10)
+    }
+
     private fun setAdapterBehaviour() {
 
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
@@ -84,13 +98,5 @@ class FragmentFriendsTabAll : Fragment(), FriendsView {
                 presenter?.loadMore(adapter?.itemCount!!)
             }
         })
-    }
-
-    override fun showMore(friendsList: MutableList<FriendInfo>) {
-        list.removeAt(list.size - 1)
-        adapter?.notifyItemRemoved(list.size)
-        list.addAll(friendsList)
-        adapter?.setLoaded()
-        adapter?.notifyItemRangeInserted(list.size, 10)
     }
 }
