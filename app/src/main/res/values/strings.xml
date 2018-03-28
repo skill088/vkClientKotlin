@@ -24,4 +24,6 @@
     <!--Profile user-->
     <string name="user.bdate" formatted="false">Дата рождения: %s</string>
     <string name="user.city" formatted="false">Город: %s</string>
+    <string name="hint.refresh">refresh</string>
+    <string name="error.network">Network problem. Check your internet connection and try again</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.proffile
+package com.projects.vo1.customvk.profile
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,11 +10,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import com.projects.vo1.customvk.R
+import com.projects.vo1.customvk.activities.FragmentError
 import com.projects.vo1.customvk.data.api.profile.ApiProfile
 import com.projects.vo1.customvk.data.profile.ProfileRepositoryImpl
-import com.projects.vo1.customvk.data.nework.ApiInterfaceProvider
+import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
+import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.fragment_error.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-
 
 
 class FragmentProfile : Fragment(), ProfileView {
@@ -27,7 +29,7 @@ class FragmentProfile : Fragment(), ProfileView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile, fragment_container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,19 +62,27 @@ class FragmentProfile : Fragment(), ProfileView {
                 "${profile.firstName} ${profile.lastName}"
 
         Glide.with(this)
-            .apply { setDefaultRequestOptions(
-                RequestOptions()
-                    .format(DecodeFormat.PREFER_ARGB_8888)) }
-//            .setDefaultRequestOptions(
-//                RequestOptions()
-//                    .format(DecodeFormat.PREFER_ARGB_8888)
-//                    .dontAnimate()
-//            )
+            .apply {
+                setDefaultRequestOptions(
+                    RequestOptions()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                )
+            }
             .load(profile.photoMax)
             .into(user_avatar)
 
-        user_bdate.text = activity?.resources?.getString(R.string.user_bdate, profile.bdate)
-        user_city.text = activity?.resources?.getString(R.string.user_city, profile.city?.title)
+        user_bdate.text =
+                activity?.resources?.getString(R.string.user_bdate,
+                    profile.bdate ?: "не указано")
+        user_city.text = activity?.resources?.getString(R.string.user_city,
+            profile.city?.title?:"не указано")
+    }
+
+    override fun showError() {
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.fragment_container, FragmentError.newInstance())
+            ?.commit()
     }
 
     companion object {
@@ -81,7 +91,7 @@ class FragmentProfile : Fragment(), ProfileView {
             return FragmentProfile()
         }
 
-        fun newInstance(id: String?) : FragmentProfile {
+        fun newInstance(id: String?): FragmentProfile {
 
             var fragment = FragmentProfile()
             val args = Bundle()

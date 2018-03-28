@@ -9,16 +9,21 @@ import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
-import com.projects.vo1.customvk.data.nework.ApiInterfaceProvider
+import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import com.projects.vo1.customvk.friends.AdapterFriends
 import com.projects.vo1.customvk.friends.FriendInfo
+import com.projects.vo1.customvk.friends.FriendInfoCallback
 import com.projects.vo1.customvk.friends.FriendsView
+import com.projects.vo1.customvk.profile.ProfileActivity
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
+import kotlinx.android.synthetic.main.fragment_error.*
+import kotlinx.android.synthetic.main.fragment_error.view.*
 import kotlinx.android.synthetic.main.fragment_tab_friends.*
 
 
-class FragmentFriendsTabOnline : Fragment(), FriendsView {
+class FragmentFriendsTabOnline : Fragment(), FriendsView, FriendInfoCallback {
 
     private var adapter: AdapterFriends? = null
     private var presenter: PresenterFriendsOnline? = null
@@ -31,7 +36,11 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_tab_friends, container, false)
     }
 
@@ -39,11 +48,13 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         super.onViewCreated(view, savedInstanceState)
 
         setSwipeRefreshBehaviour()
+        setRefreshButtonBehaviour()
 
         val layoutManager = LinearLayoutManager(context)
         friends_recycler_view.layoutManager = layoutManager
 
         adapter = AdapterFriends(friends_recycler_view, list)
+        adapter?.setOnClickListener(this)
         setAdapterBehaviour()
         friends_recycler_view.adapter = adapter
 
@@ -70,15 +81,16 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.colorAccent))
         swipe_refresh.setOnRefreshListener {
             list.clear()
-//            adapter?.notifyItemRangeRemoved(0, adapter?.itemCount!!)
             adapter?.notifyDataSetChanged()
             presenter?.refresh()
         }
     }
 
     override fun hideSwipeRefresh() {
-        if  (swipe_refresh.isRefreshing)
+        if (swipe_refresh.isRefreshing)
             swipe_refresh.isRefreshing = false
+        if (error_layout.visibility == View.VISIBLE)
+            error_layout.visibility = View.GONE
     }
 
     override fun showMore(friendsList: MutableList<FriendInfo>) {
@@ -86,7 +98,15 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         adapter?.notifyItemRemoved(list.size)
         list.addAll(friendsList)
         adapter?.setLoaded()
-        adapter?.notifyItemRangeInserted(list.size,  10)
+        adapter?.notifyItemRangeInserted(list.size, 10)
+    }
+
+    override fun onClick(id: String?) {
+        activity?.startActivity(ProfileActivity.getIntent(id, activity?.applicationContext!!))
+    }
+
+    override fun showError() {
+        error_layout.visibility = View.VISIBLE
     }
 
     private fun setAdapterBehaviour() {
@@ -94,9 +114,17 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView {
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
             override fun onLoadMore() {
                 list.add(FriendInfo())
-                adapter?.notifyItemInserted(list.size - 1)
+                friends_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
                 presenter?.loadMore(adapter?.itemCount!!)
             }
+        })
+    }
+
+    private fun setRefreshButtonBehaviour() {
+        error_layout.refresh_button.setOnClickListener({
+            Log.d("refresh", "click!")
+            presenter?.refresh()
+            error_layout.visibility = View.GONE
         })
     }
 }

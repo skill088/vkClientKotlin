@@ -4,20 +4,22 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
-import com.projects.vo1.customvk.data.nework.ApiInterfaceProvider
+import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import com.projects.vo1.customvk.friends.AdapterFriends
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendInfoCallback
 import com.projects.vo1.customvk.friends.FriendsView
-import com.projects.vo1.customvk.proffile.FragmentProfile
+import com.projects.vo1.customvk.profile.ProfileActivity
 import kotlinx.android.synthetic.main.fragment_tab_friends.*
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
+import kotlinx.android.synthetic.main.fragment_error.*
 
 
 class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
@@ -33,14 +35,19 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tab_friends, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_tab_friends, fragment_container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setSwipeRefreshBehaviour()
+        setRefreshButtonBehaviour()
 
         val layoutManager = LinearLayoutManager(context)
         friends_recycler_view.layoutManager = layoutManager
@@ -60,7 +67,6 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
     }
 
 
-
     override fun onStop() {
         super.onStop()
         presenter?.clearCompositeDesposable()
@@ -69,6 +75,8 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
     override fun hideSwipeRefresh() {
         if (swipe_refresh.isRefreshing)
             swipe_refresh.isRefreshing = false
+        if (error_layout.visibility == View.VISIBLE)
+            error_layout.visibility = View.GONE
     }
 
     override fun showFriends(friends: MutableList<FriendInfo>) {
@@ -77,19 +85,13 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
     }
 
     override fun onClick(id: String?) {
-//        activity?.supportFragmentManager
-//            ?.beginTransaction()
-////            ?.replace(R.id.fragment_container, FragmentProfile.newInstance(id), "ProfileDetails")
-//            ?.attach(FragmentProfile.newInstance(id))
-//            ?.addToBackStack("")
-//            ?.commit()
+        activity?.startActivity(ProfileActivity.getIntent(id, activity?.applicationContext!!))
     }
 
     private fun setSwipeRefreshBehaviour() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.colorAccent))
         swipe_refresh.setOnRefreshListener {
             list.clear()
-//            adapter?.notifyItemRangeRemoved(0, adapter?.itemCount!!)
             adapter?.notifyDataSetChanged()
             presenter?.refresh()
         }
@@ -100,7 +102,8 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
             override fun onLoadMore() {
                 list.add(FriendInfo())
-                adapter?.notifyItemInserted(list.size - 1)
+                friends_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
+//                adapter?.notifyItemInserted(list.size - 1)
                 presenter?.loadMore(adapter?.itemCount!!)
             }
         })
@@ -112,5 +115,17 @@ class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
         list.addAll(friendsList)
         adapter?.setLoaded()
         adapter?.notifyItemRangeInserted(list.size, 10)
+    }
+
+    override fun showError() {
+        error_layout.visibility = View.VISIBLE
+    }
+
+    private fun setRefreshButtonBehaviour() {
+        refresh_button.setOnClickListener({
+            Log.d("refresh", "click!")
+            presenter?.refresh()
+            error_layout.visibility = View.GONE
+        })
     }
 }

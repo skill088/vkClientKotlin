@@ -15,7 +15,7 @@ import com.projects.vo1.customvk.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import com.projects.vo1.customvk.friends.FragmentFriends
-import com.projects.vo1.customvk.proffile.FragmentProfile
+import com.projects.vo1.customvk.profile.FragmentProfile
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -96,6 +96,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.menu_friends -> {
                 setSupportActionBar(toolbar)
+                val toggle = ActionBarDrawerToggle(
+                    this,
+                    drawer_layout,
+                    toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close
+                )
+                drawer_layout.addDrawerListener(toggle)
+                toggle.syncState()
                 supportActionBar?.title = resources.getString(R.string.menu_frineds)
                 toolbar.visibility = View.VISIBLE
                 supportFragmentManager

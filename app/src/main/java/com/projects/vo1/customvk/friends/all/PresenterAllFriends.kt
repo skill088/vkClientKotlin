@@ -1,15 +1,19 @@
 package com.projects.vo1.customvk.friends.all
 
+import android.util.Log
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
+import com.projects.vo1.customvk.data.network.Error
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsView
 import com.projects.vo1.customvk.presenter.BasePresenter
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
+import java.net.UnknownHostException
 
-class PresenterAllFriends(private val friendsRepository: FriendsRepositoryImpl,
-                          private val view: FriendsView
+class PresenterAllFriends(
+    private val friendsRepository: FriendsRepositoryImpl,
+    private val view: FriendsView
 ) : BasePresenter() {
 
     var friendsList = mutableListOf<FriendInfo>()
@@ -17,30 +21,51 @@ class PresenterAllFriends(private val friendsRepository: FriendsRepositoryImpl,
     fun getFriends() {
         compositeDisposable.add(
             friendsRepository.getAll(0)
-                .flatMap { infos -> Observable.fromIterable(infos.response?.items) }
-                .map { friend -> friendsList.add(friend) }
+                .map { friendsList.addAll(it.response?.items!!) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(
-                        {
-                            view.showFriends(friendsList)
-                            view.hideSwipeRefresh()
-                        })
-                .subscribe()
+                .subscribe(
+                    {
+                        view.showFriends(friendsList)
+                        view.hideSwipeRefresh()
+                    },
+                    { t: Throwable? ->
+                        view.hideSwipeRefresh()
+                        when (t) {
+                            is Error.WrongGetException -> Log.e("error: ", t.message)
+                            is UnknownHostException -> view.showError()
+                            else -> {
+                                Log.e("error: ", t?.message + "\n")
+                                t?.printStackTrace()
+                            }
+                        }
+                    }
+                )
         )
     }
 
     fun loadMore(offset: Int) {
         friendsList.clear()
         friendsRepository.getAll(offset)
-                .flatMap { infos -> Observable.fromIterable(infos.response?.items) }
-                .map { friend -> friendsList.add(friend) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete {
+            .map { it.response?.items?.forEach { friendsList.add(it) } }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
                     view.showMore(friendsList)
+                },
+                { t: Throwable? ->
+                    view.hideSwipeRefresh()
+                    when (t) {
+                        is Error.WrongGetException -> Log.e("error: ", t.message)
+                        is UnknownHostException -> view.showError()
+                        else -> {
+                            Log.e("error: ", t?.message + "\n")
+                            t?.printStackTrace()
+                        }
+                    }
                 }
-                .subscribe()
+            )
     }
 
     fun refresh() {

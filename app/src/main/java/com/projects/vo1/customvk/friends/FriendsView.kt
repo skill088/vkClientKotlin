@@ -10,4 +10,5 @@ interface FriendsView {
     fun showFriends(friends: MutableList<FriendInfo>)
     fun hideSwipeRefresh()
     fun showMore(friendsList: MutableList<FriendInfo>)
+    fun showError()
 }

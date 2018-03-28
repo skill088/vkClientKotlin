@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.data.nework.model_api_response
+package com.projects.vo1.customvk.data.network.response
 
 import com.google.gson.annotations.SerializedName
 

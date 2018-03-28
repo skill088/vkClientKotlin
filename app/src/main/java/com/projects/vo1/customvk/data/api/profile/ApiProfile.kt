@@ -1,7 +1,7 @@
 package com.projects.vo1.customvk.data.api.profile
 
-import com.projects.vo1.customvk.data.nework.model_api_response.ApiResponseObject
-import com.projects.vo1.customvk.proffile.ProfileInfo
+import com.projects.vo1.customvk.data.network.response.ApiResponseObject
+import com.projects.vo1.customvk.profile.ProfileInfo
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

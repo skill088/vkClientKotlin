@@ -5,28 +5,28 @@ import android.preference.PreferenceManager
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.api.friends.ApiResponseFriendsAll
 import com.projects.vo1.customvk.friends.FriendInfo
-import com.projects.vo1.customvk.friends.FriendsIds
-import com.projects.vo1.customvk.data.nework.model_api_response.ApiResponseObject
-import io.reactivex.Observable
+import com.projects.vo1.customvk.data.network.response.ApiResponseObject
+import com.projects.vo1.customvk.data.utils.Transformer.errorTransformer
+import io.reactivex.Single
 
-/**
- * Created by Admin on 21.03.2018.
- */
+
 class FriendsRepositoryImpl(private val apiFriends: ApiFriends, val context: Context) :
-        IFriendsRepository {
+    IFriendsRepository {
 
     private val token: String? = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString("TOKEN", null)
+        .getString("TOKEN", null)
 
-    override fun getAll(offset: Int): Observable<ApiResponseFriendsAll> {
-        return apiFriends.getFriends(token?: null.toString(), offset)
+    override fun getAll(offset: Int): Single<ApiResponseFriendsAll> {
+        return apiFriends.getFriends(token ?: null.toString(), offset)
+            .compose(errorTransformer())
     }
 
-    override fun getOnline(offset: Int): Observable<FriendsIds> {
-        return apiFriends.getOnline(token?: null.toString(), offset)
+    override fun getOnline(offset: Int): Single<ApiResponseObject<LongArray>> {
+        return apiFriends.getOnline(token ?: null.toString(), offset)
+            .compose(errorTransformer())
     }
 
-    override fun getOnlineInfo(ids: String): Observable<ApiResponseObject<List<FriendInfo>>> {
-        return apiFriends.getInfoOnline(token?: null.toString(), ids)
+    override fun getOnlineInfo(ids: String): Single<ApiResponseObject<List<FriendInfo>>> {
+        return apiFriends.getInfoOnline(token ?: null.toString(), ids)
     }
 }

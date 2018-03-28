@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.proffile
+package com.projects.vo1.customvk.profile
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
