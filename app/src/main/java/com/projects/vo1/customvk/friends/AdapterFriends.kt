@@ -47,7 +47,7 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
         return when (viewType) {
             VIEW_TYPE_ITEM -> {
                 val view = LayoutInflater.from(parent.context).inflate(
-                    R.layout.friends_list_item,
+                    R.layout.list_item_friends,
                     parent, false
                 )
                 FriendHolder(view)

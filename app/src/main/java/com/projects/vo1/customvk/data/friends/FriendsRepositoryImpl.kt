@@ -28,5 +28,6 @@ class FriendsRepositoryImpl(private val apiFriends: ApiFriends, val context: Con
 
     override fun getOnlineInfo(ids: String): Single<ApiResponseObject<List<FriendInfo>>> {
         return apiFriends.getInfoOnline(token ?: null.toString(), ids)
+            .compose(errorTransformer())
     }
 }
