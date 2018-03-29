@@ -11,7 +11,7 @@ import io.reactivex.Single
 
 
 class FriendsRepositoryImpl(private val apiFriends: ApiFriends, val context: Context) :
-    IFriendsRepository {
+    FriendsRepository {
 
     private val token: String? = PreferenceManager.getDefaultSharedPreferences(context)
         .getString("TOKEN", null)

@@ -8,14 +8,17 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.projects.vo1.customvk.R
+import com.projects.vo1.customvk.dialogs.FragmentDialogs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import com.projects.vo1.customvk.friends.FragmentFriends
 import com.projects.vo1.customvk.profile.FragmentProfile
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -95,30 +98,59 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .commit()
             }
             R.id.menu_friends -> {
-                setSupportActionBar(toolbar)
-                val toggle = ActionBarDrawerToggle(
-                    this,
-                    drawer_layout,
-                    toolbar,
-                    R.string.navigation_drawer_open,
-                    R.string.navigation_drawer_close
-                )
-                drawer_layout.addDrawerListener(toggle)
-                toggle.syncState()
-                supportActionBar?.title = resources.getString(R.string.menu_frineds)
-                toolbar.visibility = View.VISIBLE
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(
-                        R.id.fragment_container,
-                        FragmentFriends.newInstance(),
-                        "FragmentFriends"
+                if (supportFragmentManager.findFragmentByTag("FragmentProfile") != null) {
+                    setSupportActionBar(toolbar)
+                    val toggle = ActionBarDrawerToggle(
+                        this,
+                        drawer_layout,
+                        toolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close
                     )
-                    .addToBackStack("FragmentFriends")
-                    .commit()
+                    drawer_layout.addDrawerListener(toggle)
+                    toggle.syncState()
+                    supportActionBar?.title = resources.getString(R.string.menu_frineds)
+                    toolbar.visibility = View.VISIBLE
+                }
+                if (supportFragmentManager.findFragmentByTag("FragmentFriends") == null) {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(
+                            R.id.fragment_container,
+                            FragmentFriends.newInstance(),
+                            "FragmentFriends"
+                        )
+                        .addToBackStack("FragmentFriends")
+                        .commit()
+                }
             }
             R.id.menu_conversations -> {
-
+                if (supportFragmentManager.findFragmentByTag("FragmentProfile") != null) {
+                    setSupportActionBar(toolbar)
+                    val toggle = ActionBarDrawerToggle(
+                        this,
+                        drawer_layout,
+                        toolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close
+                    )
+                    drawer_layout.addDrawerListener(toggle)
+                    toggle.syncState()
+                    supportActionBar?.title = resources.getString(R.string.menu_frineds)
+                    toolbar.visibility = View.VISIBLE
+                }
+                if (supportFragmentManager.findFragmentByTag("FragmentDialogs") == null) {
+                    supportActionBar?.title = resources.getString(R.string.menu_conversations)
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(
+                            R.id.fragment_container,
+                            FragmentDialogs.newInstance(),
+                            "FragmentDialogs"
+                        )
+                        .addToBackStack("FragmentDialogs")
+                        .commit()
+                }
             }
             R.id.menu_account_logout -> {
 

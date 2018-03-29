@@ -9,6 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
+import com.projects.vo1.customvk.data.api.dialogs.ApiDialogs
+import com.projects.vo1.customvk.data.dialogs.DialogsRepositoryImpl
+import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_dialogs.*
 import kotlinx.android.synthetic.main.fragment_error.*
@@ -18,6 +21,15 @@ class FragmentDialogs : Fragment(), DialogsView {
     private var adapter: AdapterDialogs? = null
     private var presenter: PresenterDialogs? = null
     private var list = mutableListOf<Message>()
+
+
+    private var onLoadMoreListener = object : OnLoadMoreListener {
+        override fun onLoadMore() {
+            list.add(Message())
+            messages_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
+            presenter?.loadMore(adapter?.itemCount!!)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +50,35 @@ class FragmentDialogs : Fragment(), DialogsView {
         adapter = AdapterDialogs(list)
         messages_recycler_view.adapter = adapter
 
-        configureScrollListener()
+        presenter = PresenterDialogs(
+            DialogsRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(
+                    ApiDialogs::class.java),
+                    activity?.applicationContext!!),
+                this)
 
+        configureScrollListener()
+        setRefreshButtonBehaviour()
+
+        presenter?.getDialogs()
+    }
+
+    override fun showMessages(messages: MutableList<Message>) {
+        val size = list.size
+        list.addAll(messages)
+        adapter?.notifyItemRangeInserted(size, 20)
+    }
+
+    override fun showError() {
+        error_layout.visibility = View.VISIBLE
+    }
+
+    override fun showMore(messages: MutableList<Message>) {
+        list.removeAt(list.size - 1)
+        adapter?.notifyItemRemoved(list.size)
+        list.addAll(messages)
+        isLoading = false
+        adapter?.notifyItemRangeInserted(list.size, 10)
     }
 
     private fun configureScrollListener() {
@@ -52,7 +91,7 @@ class FragmentDialogs : Fragment(), DialogsView {
                 if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
                     if (lastVisibleItem == -1)
                         return
-                    onLoadMoreListener?.onLoadMore()
+                    onLoadMoreListener.onLoadMore()
                     isLoading = true
                 }
             }
@@ -69,12 +108,10 @@ class FragmentDialogs : Fragment(), DialogsView {
 
     companion object {
 
-
         private var isLoading = false
-        private const val visibleThreshold = 3
+        private const val visibleThreshold = 5
         private var lastVisibleItem = 0
         private var totalItemCount = 0
-        private var onLoadMoreListener: OnLoadMoreListener? = null
 
         fun newInstance(): FragmentDialogs {
             return FragmentDialogs()

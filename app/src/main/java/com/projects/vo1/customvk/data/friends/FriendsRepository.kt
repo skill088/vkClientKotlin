@@ -5,7 +5,7 @@ import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import io.reactivex.Single
 
-interface IFriendsRepository {
+interface FriendsRepository {
 
     fun getAll(offset: Int): Single<ApiResponseFriendsAll>
     fun getOnline(offset: Int): Single<ApiResponseObject<LongArray>>
