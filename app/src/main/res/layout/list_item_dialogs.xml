@@ -7,7 +7,7 @@
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatar"
+        android:id="@+id/dialog_avatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginLeft="8dp"
@@ -17,18 +17,22 @@
         />
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/dialog_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_toEndOf="@+id/avatar"
+        android:layout_toRightOf="@+id/dialog_avatar"
+        android:layout_toEndOf="@+id/dialog_avatar"
+        android:layout_toLeftOf="@+id/dialog_time"
+        android:layout_toStartOf="@+id/dialog_time"
+        android:singleLine="true"
         tools:text="User Name"
         />
 
     <TextView
+        android:id="@+id/dialog_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
@@ -39,39 +43,45 @@
         tools:text="00:00"
         />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatar_mini"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_toEndOf="@+id/avatar"
-        tools:src="@mipmap/ic_launcher"
-        android:layout_below="@+id/user_name"
-        />
+        android:layout_toRightOf="@+id/dialog_avatar"
+        android:layout_toEndOf="@+id/dialog_avatar"
+        android:layout_below="@+id/dialog_name"
+        >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_toRightOf="@+id/avatar_mini"
-        android:layout_toEndOf="@+id/avatar_mini"
-        android:layout_alignTop="@+id/avatar_mini"
-        android:singleLine="true"
-        tools:text="Здесь будет текст некоторого сообщения без смайликов"
-        />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/interlocutor_avatar"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                tools:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/message_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                tools:text="Здесь будет текст некоторого сообщения без смайликов"
+                />
+    </LinearLayout>
+
 
     <View
+        android:id="@+id/separator"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_toEndOf="@+id/avatar"
+        android:layout_toRightOf="@+id/dialog_avatar"
+        android:layout_toEndOf="@+id/dialog_avatar"
         android:background="@color/grey"
         />
 
