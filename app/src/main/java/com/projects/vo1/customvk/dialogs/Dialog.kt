@@ -2,7 +2,7 @@ package com.projects.vo1.customvk.dialogs
 
 import com.google.gson.annotations.SerializedName
 
-class Message {
+class Dialog {
 
     @SerializedName("id")
     val id: Int? = null
@@ -11,7 +11,7 @@ class Message {
     @SerializedName("out")
     val out: Int? = null
     @SerializedName("user_id")
-    val userId: Int? = null
+    val userId: Long? = null
     @SerializedName("read_state")
     val readState: Int? = null
     @SerializedName("title")
@@ -21,6 +21,7 @@ class Message {
     @SerializedName("chat_id")
     val chatId: Int? = null
     @SerializedName("photo_200")
-    val photo: String? = null
+    var photo: String? = null
+    var userName: String? = null
     var userPhoto: String? = null
 }

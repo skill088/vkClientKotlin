@@ -3,6 +3,7 @@ package com.projects.vo1.customvk.data.api.dialogs
 import com.projects.vo1.customvk.data.network.response.ApiResponseList
 import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import com.projects.vo1.customvk.dialogs.MessageContainer
+import com.projects.vo1.customvk.dialogs.details.Message
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,6 +15,13 @@ interface ApiDialogs {
         @Query("access_token") token: String,
         @Query("offset") offset: Int
     ): Single<ApiResponseDialogs>
+
+    @GET("messages.getHistory?v=5.73&count=30")
+    fun getHistory(
+        @Query("access_token") token: String,
+        @Query("offset") offset: Int
+    ): Single<ApiResponseMessages>
 }
 
 typealias ApiResponseDialogs = ApiResponseObject<ApiResponseList<MessageContainer>>
+typealias ApiResponseMessages = ApiResponseObject<ApiResponseList<Message>>

@@ -14,6 +14,7 @@ import com.projects.vo1.customvk.activities.FragmentError
 import com.projects.vo1.customvk.data.api.profile.ApiProfile
 import com.projects.vo1.customvk.data.profile.ProfileRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
+import com.projects.vo1.customvk.utils.GlideApp
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.fragment_error.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -35,6 +36,7 @@ class FragmentProfile : Fragment(), ProfileView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val activity = activity as AppCompatActivity
+        toolbar.title=""
         activity.setSupportActionBar(toolbar)
     }
 
@@ -61,14 +63,9 @@ class FragmentProfile : Fragment(), ProfileView {
         collapsing_toolbar.title =
                 "${profile.firstName} ${profile.lastName}"
 
-        Glide.with(this)
-            .apply {
-                setDefaultRequestOptions(
-                    RequestOptions()
-                        .format(DecodeFormat.PREFER_ARGB_8888)
-                )
-            }
+        GlideApp.with(this)
             .load(profile.photoMax)
+            .placeholder(R.drawable.no_avatar400)
             .into(user_avatar)
 
         user_bdate.text =
@@ -93,7 +90,7 @@ class FragmentProfile : Fragment(), ProfileView {
 
         fun newInstance(id: String?): FragmentProfile {
 
-            var fragment = FragmentProfile()
+            val fragment = FragmentProfile()
             val args = Bundle()
             args.putString("USER_ID", id)
             fragment.arguments = args

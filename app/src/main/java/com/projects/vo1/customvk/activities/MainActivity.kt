@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     supportActionBar?.title = resources.getString(R.string.menu_frineds)
                     toolbar.visibility = View.VISIBLE
                 }
-                if (supportFragmentManager.findFragmentByTag("FragmentFriends") == null) {
+//                if (supportFragmentManager.findFragmentByTag("FragmentFriends") == null) {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         )
                         .addToBackStack("FragmentFriends")
                         .commit()
-                }
+//                }
             }
             R.id.menu_conversations -> {
                 if (supportFragmentManager.findFragmentByTag("FragmentProfile") != null) {
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     supportActionBar?.title = resources.getString(R.string.menu_frineds)
                     toolbar.visibility = View.VISIBLE
                 }
-                if (supportFragmentManager.findFragmentByTag("FragmentDialogs") == null) {
+    //                if (supportFragmentManager. findFragmentByTag("FragmentDialogs") == null) {
                     supportActionBar?.title = resources.getString(R.string.menu_conversations)
                     supportFragmentManager
                         .beginTransaction()
@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         )
                         .addToBackStack("FragmentDialogs")
                         .commit()
-                }
+    //                }
             }
             R.id.menu_account_logout -> {
 

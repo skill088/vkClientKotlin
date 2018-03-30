@@ -27,6 +27,7 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".dialogs.details.MessagesActivity"></activity>
     </application>
 
 </manifest>

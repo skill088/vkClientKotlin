@@ -8,7 +8,7 @@ import io.reactivex.Single
 interface FriendsRepository {
 
     fun getAll(offset: Int): Single<ApiResponseFriendsAll>
-    fun getOnline(offset: Int): Single<ApiResponseObject<LongArray>>
-    fun getOnlineInfo(ids: String): Single<ApiResponseObject<List<FriendInfo>>>
+    fun getOnlineFriends(offset: Int): Single<ApiResponseObject<LongArray>>
+    fun getUserInfos(ids: List<Long>): Single<ApiResponseObject<List<FriendInfo>>>
 }
 

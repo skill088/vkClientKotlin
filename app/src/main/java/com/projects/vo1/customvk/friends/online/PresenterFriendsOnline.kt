@@ -6,9 +6,7 @@ import com.projects.vo1.customvk.data.network.Error
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsView
 import com.projects.vo1.customvk.presenter.BasePresenter
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
 import java.net.UnknownHostException
 
@@ -21,11 +19,9 @@ class PresenterFriendsOnline(
 
     fun getOnlineFriends() {
         compositeDisposable.add(
-            friendsRepository.getOnline(0)
+            friendsRepository.getOnlineFriends(0)
                 .flatMap { ids ->
-                    friendsRepository.getOnlineInfo(
-                        ids.response!!.joinToString(",")
-                    )
+                    friendsRepository.getUserInfos(ids.response!! as List<Long>)
                 }
                 .map { friend -> friendsList.addAll(friend.response!!) }
                 .subscribeOn(Schedulers.io())
@@ -52,11 +48,9 @@ class PresenterFriendsOnline(
 
     fun loadMore(offset: Int) {
         friendsList.clear()
-        friendsRepository.getOnline(offset)
+        friendsRepository.getOnlineFriends(offset)
             .flatMap { ids ->
-                friendsRepository.getOnlineInfo(
-                    ids.response!!.joinToString(",")
-                )
+                friendsRepository.getUserInfos(ids.response!! as List<Long>)
             }
             .map { friend -> friendsList.addAll(friend.response!!) }
             .subscribeOn(Schedulers.io())

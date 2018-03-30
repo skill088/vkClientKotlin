@@ -21,13 +21,13 @@ class FriendsRepositoryImpl(private val apiFriends: ApiFriends, val context: Con
             .compose(errorTransformer())
     }
 
-    override fun getOnline(offset: Int): Single<ApiResponseObject<LongArray>> {
+    override fun getOnlineFriends(offset: Int): Single<ApiResponseObject<LongArray>> {
         return apiFriends.getOnline(token ?: null.toString(), offset)
             .compose(errorTransformer())
     }
 
-    override fun getOnlineInfo(ids: String): Single<ApiResponseObject<List<FriendInfo>>> {
-        return apiFriends.getInfoOnline(token ?: null.toString(), ids)
+    override fun getUserInfos(ids: List<Long>): Single<ApiResponseObject<List<FriendInfo>>> {
+        return apiFriends.getInfoOnline(token ?: null.toString(), ids.joinToString(","))
             .compose(errorTransformer())
     }
 }

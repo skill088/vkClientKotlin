@@ -10,23 +10,26 @@ import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.dialogs.ApiDialogs
+import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.dialogs.DialogsRepositoryImpl
+import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
+import com.projects.vo1.customvk.dialogs.details.MessagesActivity
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_dialogs.*
 import kotlinx.android.synthetic.main.fragment_error.*
 
-class FragmentDialogs : Fragment(), DialogsView {
+class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
 
     private var adapter: AdapterDialogs? = null
     private var presenter: PresenterDialogs? = null
-    private var list = mutableListOf<Message>()
+    private var list = mutableListOf<Dialog>()
 
 
     private var onLoadMoreListener = object : OnLoadMoreListener {
         override fun onLoadMore() {
-            list.add(Message())
-            messages_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
+            list.add(Dialog())
+            dialogs_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
             presenter?.loadMore(adapter?.itemCount!!)
         }
     }
@@ -45,27 +48,33 @@ class FragmentDialogs : Fragment(), DialogsView {
         setRefreshButtonBehaviour()
 
         val layoutManager = LinearLayoutManager(context)
-        messages_recycler_view.layoutManager = layoutManager
+        dialogs_recycler_view.layoutManager = layoutManager
 
         adapter = AdapterDialogs(list)
-        messages_recycler_view.adapter = adapter
+        dialogs_recycler_view.adapter = adapter
 
         presenter = PresenterDialogs(
             DialogsRepositoryImpl(
-                ApiInterfaceProvider.getApiInterface(
-                    ApiDialogs::class.java),
-                    activity?.applicationContext!!),
-                this)
+                ApiInterfaceProvider.getApiInterface(ApiDialogs::class.java),
+                activity?.applicationContext!!
+            ),
+            FriendsRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(ApiFriends::class.java),
+                activity?.applicationContext!!
+            ),
+            this
+        )
 
         configureScrollListener()
         setRefreshButtonBehaviour()
+        adapter?.setClickListener(this)
 
         presenter?.getDialogs()
     }
 
-    override fun showMessages(messages: MutableList<Message>) {
+    override fun showMessages(dialogs: List<Dialog>) {
         val size = list.size
-        list.addAll(messages)
+        list.addAll(dialogs)
         adapter?.notifyItemRangeInserted(size, 20)
     }
 
@@ -73,17 +82,17 @@ class FragmentDialogs : Fragment(), DialogsView {
         error_layout.visibility = View.VISIBLE
     }
 
-    override fun showMore(messages: MutableList<Message>) {
+    override fun showMore(dialogs: List<Dialog>) {
         list.removeAt(list.size - 1)
         adapter?.notifyItemRemoved(list.size)
-        list.addAll(messages)
+        list.addAll(dialogs)
         isLoading = false
         adapter?.notifyItemRangeInserted(list.size, 10)
     }
 
     private fun configureScrollListener() {
-        val linearLayoutManager = messages_recycler_view.layoutManager as LinearLayoutManager
-        messages_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        val linearLayoutManager = dialogs_recycler_view.layoutManager as LinearLayoutManager
+        dialogs_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 totalItemCount = linearLayoutManager.itemCount
@@ -96,6 +105,10 @@ class FragmentDialogs : Fragment(), DialogsView {
                 }
             }
         })
+    }
+
+    override fun onClick(id: Int) {
+        activity?.startActivity(MessagesActivity.getIntent(id, context!!))
     }
 
     private fun setRefreshButtonBehaviour() {

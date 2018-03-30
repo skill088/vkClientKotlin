@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class MessageContainer {
 
     @SerializedName("message")
-    val message: Message? = null
+    val dialog: Dialog? = null
 
     @SerializedName("in_read")
     val inRead: Int? = null

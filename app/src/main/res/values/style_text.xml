@@ -8,4 +8,9 @@
     <style name="profile_data">
         <item name="android:textSize">20sp</item>
     </style>
+
+    <style name="dialogs_title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
