@@ -28,4 +28,5 @@
     <string name="error.network">Network problem. Check your internet connection and try again</string>
     <string name="hint.input_message">Введите текст сообщения</string>
     <string name="description.send_btn">Send btn</string>
+    <string name="share_chooser_title">Поделиться</string>
 </resources>

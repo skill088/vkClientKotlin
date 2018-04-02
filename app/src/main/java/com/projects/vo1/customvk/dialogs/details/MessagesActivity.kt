@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.view.MenuItemCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.ShareActionProvider
+import android.view.Menu
+import android.view.MenuItem
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.dialogs.ApiDialogs
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
@@ -21,6 +25,8 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
     private var presenter: PresenterMessages? = null
     private var adapter: AdapterMessages? = null
     private val list = mutableListOf<Message>()
+    private var miShareAction: ShareActionProvider? = null
+
 
     private var isLoading = false
     private val visibleThreshold = 5
@@ -62,7 +68,10 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
         configureScrollListener()
 
         send.setOnClickListener {
-            when(intent.extras.getBoolean(INTENT_KEY_CHAT) && !input_message.text.toString().isEmpty()) {
+            if (input_message.text.toString().isEmpty())
+                return@setOnClickListener
+
+            when(intent.extras.getBoolean(INTENT_KEY_CHAT)) {
                 true -> {
                     presenter?.sendMessage(
                         null,
@@ -97,6 +106,13 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
             this
         )
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.message_menu, menu)
+//        val item = menu?.findItem(R.id.menu_item_share)
+//        miShareAction = MenuItemCompat.getActionProvider(item) as ShareActionProvider
+//        return true
+//    }
 
     override fun onStart() {
         super.onStart()
@@ -144,6 +160,13 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
                 }
             }
         })
+    }
+
+    private fun shareMessage(message: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_chooser_title)))
     }
 
     companion object {

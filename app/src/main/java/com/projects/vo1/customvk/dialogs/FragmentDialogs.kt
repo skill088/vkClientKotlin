@@ -15,6 +15,7 @@ import com.projects.vo1.customvk.data.dialogs.DialogsRepositoryImpl
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import com.projects.vo1.customvk.dialogs.details.MessagesActivity
+import com.projects.vo1.customvk.utils.GlideApp
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_dialogs.*
 import kotlinx.android.synthetic.main.fragment_error.*
@@ -51,7 +52,7 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
         val layoutManager = LinearLayoutManager(context)
         dialogs_recycler_view.layoutManager = layoutManager
 
-        adapter = AdapterDialogs(list)
+        adapter = AdapterDialogs(list, GlideApp.with(this))
         dialogs_recycler_view.adapter = adapter
 
         presenter = PresenterDialogs(

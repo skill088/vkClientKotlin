@@ -7,14 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.bumptech.glide.RequestManager
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.utils.GlideApp
+import com.projects.vo1.customvk.utils.GlideRequests
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class AdapterDialogs(private val list: MutableList<Dialog>) :
+class AdapterDialogs(private val list: MutableList<Dialog>, private val glide: GlideRequests) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_ITEM = 0
@@ -65,13 +67,11 @@ class AdapterDialogs(private val list: MutableList<Dialog>) :
                 )
             })
 
-            GlideApp.with(context)
-                .load(message.photo/* ?: message.userPhoto*/)
+            glide.load(message.photo)
                 .placeholder(R.drawable.no_avatar)
                 .into(holder.dialogAvatar)
 
-            GlideApp.with(context)
-                .load(message.userPhoto)
+            glide.load(message.userPhoto)
                 .placeholder(R.drawable.no_avatar)
                 .into(holder.userAvatar)
 
@@ -79,7 +79,7 @@ class AdapterDialogs(private val list: MutableList<Dialog>) :
                     if (!message.title.equals("")) message.title else message.userName
             holder.messageBody.text = message.body
 
-            date.time = (message.date!! * 1000L)
+            date.time = (message.date * 1000L)
             val difference = Date().time - date.time
             when {
                 difference < dayMillisec - 1 -> {
