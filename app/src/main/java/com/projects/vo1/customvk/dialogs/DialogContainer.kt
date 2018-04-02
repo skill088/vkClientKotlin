@@ -2,18 +2,13 @@ package com.projects.vo1.customvk.dialogs
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by Admin on 29.03.2018.
- */
-class MessageContainer {
-
+class DialogContainer (
     @SerializedName("message")
-    val dialog: Dialog? = null
+    val dialog: Dialog,
 
     @SerializedName("in_read")
-    val inRead: Int? = null
+    val inRead: Int,
 
     @SerializedName("out_read")
-    val outRead: Int? = null
-
-}
+    val outRead: Int
+)

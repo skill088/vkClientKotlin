@@ -56,15 +56,18 @@ class AdapterDialogs(private val list: MutableList<Dialog>) :
         if (holder is DialogsHolder) {
             val message = list[position]
 
-            holder.itemView.setOnClickListener({ clickListener?.onClick(message.id!!) })
+            holder.itemView.setOnClickListener({
+                clickListener?.onClick(
+                    if(message.chatId == null) message.userId else message.chatId + 2000000000L,
+                    if (message.title != "") message.title else message.userName!!
+                )
+            })
 
-//            if (dialog.photo != null)
             GlideApp.with(context)
                 .load(message.photo/* ?: message.userPhoto*/)
                 .placeholder(R.drawable.no_avatar)
                 .into(holder.dialogAvatar)
 
-//            if (dialog.userPhoto != null)
             GlideApp.with(context)
                 .load(message.userPhoto)
                 .placeholder(R.drawable.no_avatar)
@@ -99,7 +102,7 @@ class AdapterDialogs(private val list: MutableList<Dialog>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list[position].id == null && position != 0) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        return if (list[position].id == -1 && position != 0) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     fun setClickListener(listener: OnDialogClickListener) {

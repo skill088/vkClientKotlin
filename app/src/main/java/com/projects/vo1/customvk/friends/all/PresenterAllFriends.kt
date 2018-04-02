@@ -16,17 +16,14 @@ class PresenterAllFriends(
     private val view: FriendsView
 ) : BasePresenter() {
 
-    var friendsList = mutableListOf<FriendInfo>()
-
     fun getFriends() {
         compositeDisposable.add(
             friendsRepository.getAll(0)
-                .map { friendsList.addAll(it.response?.items!!) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        view.showFriends(friendsList)
+                        view.showFriends(it.response.items)
                         view.hideSwipeRefresh()
                     },
                     { t: Throwable? ->
@@ -45,14 +42,12 @@ class PresenterAllFriends(
     }
 
     fun loadMore(offset: Int) {
-        friendsList.clear()
         friendsRepository.getAll(offset)
-            .map { it.response?.items?.forEach { friendsList.add(it) } }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    view.showMore(friendsList)
+                    view.showMore(it.response.items)
                 },
                 { t: Throwable? ->
                     view.hideSwipeRefresh()
@@ -70,7 +65,6 @@ class PresenterAllFriends(
 
     fun refresh() {
         clearCompositeDesposable()
-        friendsList.clear()
         getFriends()
     }
 

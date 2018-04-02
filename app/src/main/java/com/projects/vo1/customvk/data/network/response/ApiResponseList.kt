@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 open class ApiResponseList<T>(
                     @SerializedName("count")
-                    val count: Int,
+                    val count: Int? = null,
                     @SerializedName("items")
                     val items: List<T>
             )

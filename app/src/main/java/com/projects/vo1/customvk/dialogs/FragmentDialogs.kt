@@ -28,7 +28,8 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
 
     private var onLoadMoreListener = object : OnLoadMoreListener {
         override fun onLoadMore() {
-            list.add(Dialog())
+            list.add(Dialog(-1, -1, -1, -1, -1, "", "",
+                null, null, null, null))
             dialogs_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
             presenter?.loadMore(adapter?.itemCount!!)
         }
@@ -107,8 +108,8 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
         })
     }
 
-    override fun onClick(id: Int) {
-        activity?.startActivity(MessagesActivity.getIntent(id, context!!))
+    override fun onClick(id: Long, title: String) {
+        activity?.startActivity(MessagesActivity.getIntent(id, title, context!!))
     }
 
     private fun setRefreshButtonBehaviour() {

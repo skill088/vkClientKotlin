@@ -94,7 +94,7 @@ class AdapterFriends(recyclerView: RecyclerView, private val list: MutableList<F
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list[position].id == null && position != 0) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        return if (list[position].id == -1L && position != 0) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     fun setOnLoadMoreListener(mOnLoadMoreListener: OnLoadMoreListener) {

@@ -3,9 +3,11 @@ package com.projects.vo1.customvk.friends.online
 import android.util.Log
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.Error
+import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsView
 import com.projects.vo1.customvk.presenter.BasePresenter
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.net.UnknownHostException
@@ -15,20 +17,12 @@ class PresenterFriendsOnline(
     private val view: FriendsView
 ) : BasePresenter() {
 
-    private var friendsList = mutableListOf<FriendInfo>()
-
     fun getOnlineFriends() {
         compositeDisposable.add(
-            friendsRepository.getOnlineFriends(0)
-                .flatMap { ids ->
-                    friendsRepository.getUserInfos(ids.response!! as List<Long>)
-                }
-                .map { friend -> friendsList.addAll(friend.response!!) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            doFriendsQuery(0)
                 .subscribe(
                     {
-                        view.showFriends(friendsList)
+                        view.showFriends(it.response)
                         view.hideSwipeRefresh()
                     },
                     { t: Throwable? ->
@@ -47,17 +41,11 @@ class PresenterFriendsOnline(
     }
 
     fun loadMore(offset: Int) {
-        friendsList.clear()
-        friendsRepository.getOnlineFriends(offset)
-            .flatMap { ids ->
-                friendsRepository.getUserInfos(ids.response!! as List<Long>)
-            }
-            .map { friend -> friendsList.addAll(friend.response!!) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(
+            doFriendsQuery(offset)
             .subscribe(
                 {
-                    view.showMore(friendsList)
+                    view.showMore(it.response)
                 },
                 { t: Throwable? ->
                     view.hideSwipeRefresh()
@@ -71,10 +59,20 @@ class PresenterFriendsOnline(
                     }
                 }
             )
+        )
+    }
+
+    private fun doFriendsQuery(offset: Int): Single<ApiResponseObject<List<FriendInfo>>> {
+        return friendsRepository.getOnlineFriends(offset)
+            .flatMap { ids ->
+                friendsRepository.getUserInfos(ids.response.toList())
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun refresh() {
-        friendsList.clear()
+        clearCompositeDesposable()
         getOnlineFriends()
     }
 }

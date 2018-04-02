@@ -67,7 +67,7 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView, FriendInfoCallback {
         presenter?.getOnlineFriends()
     }
 
-    override fun showFriends(friends: MutableList<FriendInfo>) {
+    override fun showFriends(friends: List<FriendInfo>) {
         list.addAll(friends)
         adapter?.notifyDataSetChanged()
     }
@@ -93,7 +93,7 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView, FriendInfoCallback {
             error_layout.visibility = View.GONE
     }
 
-    override fun showMore(friendsList: MutableList<FriendInfo>) {
+    override fun showMore(friendsList: List<FriendInfo>) {
         list.removeAt(list.size - 1)
         adapter?.notifyItemRemoved(list.size)
         list.addAll(friendsList)
@@ -113,7 +113,7 @@ class FragmentFriendsTabOnline : Fragment(), FriendsView, FriendInfoCallback {
 
         adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
             override fun onLoadMore() {
-                list.add(FriendInfo())
+                list.add(FriendInfo(-1,"", "", ""))
                 friends_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
                 presenter?.loadMore(adapter?.itemCount!!)
             }

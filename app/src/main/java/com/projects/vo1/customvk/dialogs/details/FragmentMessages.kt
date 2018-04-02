@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 
-class FragmentMessages : Fragment(), MessagesView {
+class FragmentMessages : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

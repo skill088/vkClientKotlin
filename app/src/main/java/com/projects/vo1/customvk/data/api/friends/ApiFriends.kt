@@ -15,7 +15,7 @@ interface ApiFriends {
         @Query("offset") offset: Int
     ): Single<ApiResponseFriendsAll>
 
-    @GET("friends.getOnlineFriends?order=hints&v=5.73&count=10")
+    @GET("friends.getOnline?order=hints&v=5.73&count=10")
     fun getOnline(
         @Query("access_token") token: String,
         @Query("offset") offset: Int

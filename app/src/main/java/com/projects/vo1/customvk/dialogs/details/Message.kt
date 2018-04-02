@@ -1,23 +1,22 @@
 package com.projects.vo1.customvk.dialogs.details
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Message {
+class Message (
     @SerializedName("id")
-    val id: Int? = null
+    val id: Int,
     @SerializedName("body")
-    val body: String? = null
+    val body: String,
     @SerializedName("user_id")
-    val userId: Int? = null
+    val userId: Int,
     @SerializedName("from_id")
-    val fromId: Int? = null
+    val fromId: Int,
     @SerializedName("date")
-    val date: Int? = null
+    val date: Long,
     @SerializedName("read_state")
-    val readState: Int? = null
+    val readState: Int,
     @SerializedName("out")
-    val out: Int? = null
+    val out: Int,
     @SerializedName("random_id")
-    val randomId: Int? = null
-}
+    val randomId: Int
+)

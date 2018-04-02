@@ -19,8 +19,8 @@ class DialogsRepositoryImpl(private val apiDialogs: ApiDialogs, val context: Con
             .compose(errorTransformer())
     }
 
-    override fun getHistory(offset: Int): Single<ApiResponseMessages> {
-        return apiDialogs.getHistory(token?: null.toString(), offset)
+    override fun getHistory(offset: Int, uid: Long): Single<ApiResponseMessages> {
+        return apiDialogs.getHistory(token?: null.toString(), offset, uid)
             .compose(errorTransformer())
     }
 }

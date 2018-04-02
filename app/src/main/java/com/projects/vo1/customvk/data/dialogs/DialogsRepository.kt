@@ -8,5 +8,5 @@ interface DialogsRepository {
 
     fun getDialogs(offset: Int): Single<ApiResponseDialogs>
 
-    fun getHistory(offset: Int): Single<ApiResponseMessages>
+    fun getHistory(offset: Int, uid: Long): Single<ApiResponseMessages>
 }

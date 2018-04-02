@@ -7,8 +7,8 @@ import android.view.View
  */
 interface FriendsView {
 
-    fun showFriends(friends: MutableList<FriendInfo>)
+    fun showFriends(friends: List<FriendInfo>)
     fun hideSwipeRefresh()
-    fun showMore(friendsList: MutableList<FriendInfo>)
+    fun showMore(friendsList: List<FriendInfo>)
     fun showError()
 }
