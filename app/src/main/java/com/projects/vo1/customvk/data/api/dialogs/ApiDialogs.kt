@@ -5,6 +5,7 @@ import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import com.projects.vo1.customvk.dialogs.DialogContainer
 import com.projects.vo1.customvk.dialogs.details.Message
 import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -22,6 +23,14 @@ interface ApiDialogs {
         @Query("offset") offset: Int,
         @Query("user_id") uid: Long
     ): Single<ApiResponseMessages>
+
+    @GET("messages.send?v=5.74")
+    fun sendMessage(
+        @Query("access_token") token: String,
+        @Query("user_id") uid: Long?,
+        @Query("chat_id") cid: Long?,
+        @Query("message") body: String
+    ): Single<ApiResponseObject<Long>>
 }
 
 typealias ApiResponseDialogs = ApiResponseObject<ApiResponseList<DialogContainer>>

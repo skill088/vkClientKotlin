@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
 
 class AdapterDialogs(private val list: MutableList<Dialog>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
 
@@ -58,8 +59,9 @@ class AdapterDialogs(private val list: MutableList<Dialog>) :
 
             holder.itemView.setOnClickListener({
                 clickListener?.onClick(
-                    if(message.chatId == null) message.userId else message.chatId + 2000000000L,
-                    if (message.title != "") message.title else message.userName!!
+                    if (message.chatId == null) message.userId else message.chatId + 2000000000L,
+                    if (message.title != "") message.title else message.userName!!,
+                    message.chatId != null
                 )
             })
 

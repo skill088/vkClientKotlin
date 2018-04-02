@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 open class ApiResponseObject<T> (
     @SerializedName("response")
-    val response: T
+    val response: T? = null
 ) : ApiError()

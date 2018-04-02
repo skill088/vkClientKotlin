@@ -22,7 +22,7 @@ class PresenterFriendsOnline(
             doFriendsQuery(0)
                 .subscribe(
                     {
-                        view.showFriends(it.response)
+                        view.showFriends(it.response!!)
                         view.hideSwipeRefresh()
                     },
                     { t: Throwable? ->
@@ -45,7 +45,7 @@ class PresenterFriendsOnline(
             doFriendsQuery(offset)
             .subscribe(
                 {
-                    view.showMore(it.response)
+                    view.showMore(it.response!!)
                 },
                 { t: Throwable? ->
                     view.hideSwipeRefresh()
@@ -65,7 +65,7 @@ class PresenterFriendsOnline(
     private fun doFriendsQuery(offset: Int): Single<ApiResponseObject<List<FriendInfo>>> {
         return friendsRepository.getOnlineFriends(offset)
             .flatMap { ids ->
-                friendsRepository.getUserInfos(ids.response.toList())
+                friendsRepository.getUserInfos(ids.response!!.toList())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

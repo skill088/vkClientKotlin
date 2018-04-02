@@ -8,7 +8,7 @@ class Message (
     @SerializedName("body")
     val body: String,
     @SerializedName("user_id")
-    val userId: Int,
+    val userId: Long,
     @SerializedName("from_id")
     val fromId: Int,
     @SerializedName("date")
@@ -18,5 +18,6 @@ class Message (
     @SerializedName("out")
     val out: Int,
     @SerializedName("random_id")
-    val randomId: Int
+    val randomId: Int,
+    var photo: String?
 )

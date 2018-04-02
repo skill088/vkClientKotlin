@@ -47,9 +47,9 @@ class PresenterDialogs(
         return dialogsRepository.getDialogs(offset)
             .flatMap { list ->
                 friendsRepository.getUserInfos(
-                    list.response.items.map { it.dialog.userId })
+                    list.response?.items!!.map { it.dialog.userId })
                     .doOnSuccess { t ->
-                        bindUsersToDialogs(list.response.items, t.response)
+                        bindUsersToDialogs(list.response.items, t.response!!)
                     }
                     .map { list.response.items.map { it.dialog } }
             }

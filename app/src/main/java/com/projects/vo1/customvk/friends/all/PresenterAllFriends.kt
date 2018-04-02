@@ -23,7 +23,7 @@ class PresenterAllFriends(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        view.showFriends(it.response.items)
+                        view.showFriends(it.response!!.items)
                         view.hideSwipeRefresh()
                     },
                     { t: Throwable? ->
@@ -47,7 +47,7 @@ class PresenterAllFriends(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    view.showMore(it.response.items)
+                    view.showMore(it.response!!.items)
                 },
                 { t: Throwable? ->
                     view.hideSwipeRefresh()

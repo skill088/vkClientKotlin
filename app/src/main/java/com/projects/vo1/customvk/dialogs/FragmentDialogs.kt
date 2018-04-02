@@ -108,8 +108,8 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
         })
     }
 
-    override fun onClick(id: Long, title: String) {
-        activity?.startActivity(MessagesActivity.getIntent(id, title, context!!))
+    override fun onClick(id: Long, name: String, isChat: Boolean) {
+        activity?.startActivity(MessagesActivity.getIntent(id, name, isChat, context!!))
     }
 
     private fun setRefreshButtonBehaviour() {

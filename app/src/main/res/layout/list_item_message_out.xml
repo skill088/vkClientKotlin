@@ -65,6 +65,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
+                    android:padding="2dp"
                     android:singleLine="true"
                     android:textSize="8sp"
                     tools:text="Отправлено: 12.01.1212" />
