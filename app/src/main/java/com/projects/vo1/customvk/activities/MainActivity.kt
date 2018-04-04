@@ -18,9 +18,18 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import com.projects.vo1.customvk.friends.FragmentFriends
 import com.projects.vo1.customvk.profile.FragmentProfile
+import com.projects.vo1.customvk.services.DialogsService
 import java.util.concurrent.TimeUnit
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+
+
+
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +61,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .replace(R.id.fragment_container, FragmentFriends.newInstance(), "FragmentFriends")
             .addToBackStack("FragmentFriends")
             .commit()
+
+        startService(Intent(this, DialogsService::class.java))
     }
 
 
@@ -109,9 +120,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     )
                     drawer_layout.addDrawerListener(toggle)
                     toggle.syncState()
-                    supportActionBar?.title = resources.getString(R.string.menu_frineds)
                     toolbar.visibility = View.VISIBLE
                 }
+                supportActionBar?.title = resources.getString(R.string.menu_frineds)
 //                if (supportFragmentManager.findFragmentByTag("FragmentFriends") == null) {
                     supportFragmentManager
                         .beginTransaction()
@@ -161,7 +172,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onDestroy() {
+        stopService(Intent(this, DialogsService::class.java))
+        super.onDestroy()
+    }
+
     companion object {
+
         fun getIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
         }

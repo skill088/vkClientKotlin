@@ -45,7 +45,7 @@ class PresenterMessages(private val dialogsDetailRep: DialogDetailRepositoryImpl
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        view.setSended()
+                        view.setSent(it.response?:-1)
                     }, {
                         Log.e("load more messages",it.message)
                     }

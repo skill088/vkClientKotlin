@@ -14,7 +14,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AdapterMessages(private val list: MutableList<Message>) :
+class AdapterMessages(private val list: MutableList<Message>,
+                      private val longClickListener: OnLongClickShare) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val MESSAGE_TYPE_IN = 0
@@ -71,6 +72,11 @@ class AdapterMessages(private val list: MutableList<Message>) :
         if (holder is MessageHolder) {
 
             val message = list[position]
+
+            holder.itemView.setOnLongClickListener {
+                longClickListener.onLongLcick(message.body)
+            true
+            }
 
             if (getItemViewType(position) == MESSAGE_TYPE_SENDING)
                 holder.itemView.setBackgroundColor(

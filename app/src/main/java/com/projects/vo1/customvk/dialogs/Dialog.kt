@@ -7,7 +7,7 @@ class Dialog (
     @SerializedName("id")
     val id: Int,
     @SerializedName("date")
-    val date: Long,
+    var date: Long,
     @SerializedName("out")
     val out: Int,
     @SerializedName("user_id")
@@ -17,7 +17,7 @@ class Dialog (
     @SerializedName("title")
     val title: String,
     @SerializedName("body")
-    val body: String,
+    var body: String,
     @SerializedName("chat_id")
     val chatId: Long? = null,
     @SerializedName("photo_200")

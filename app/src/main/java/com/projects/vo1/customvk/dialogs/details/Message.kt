@@ -6,13 +6,13 @@ class Message (
     @SerializedName("id")
     val id: Int,
     @SerializedName("body")
-    val body: String,
+    var body: String,
     @SerializedName("user_id")
     val userId: Long,
     @SerializedName("from_id")
-    val fromId: Int,
+    val fromId: Long,
     @SerializedName("date")
-    val date: Long,
+    var date: Long,
     @SerializedName("read_state")
     val readState: Int,
     @SerializedName("out")

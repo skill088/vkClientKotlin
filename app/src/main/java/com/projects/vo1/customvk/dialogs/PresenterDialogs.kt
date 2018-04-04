@@ -43,6 +43,20 @@ class PresenterDialogs(
         )
     }
 
+    fun reload() {
+        compositeDisposable.add(
+            doDialogsQuery(0)
+                .subscribe(
+                    {
+                        view.reload(it)
+                    },
+                    {
+                        Log.e("error: ", it.message)
+                    }
+                )
+        )
+    }
+
     private fun doDialogsQuery(offset: Int): Single<List<Dialog>> {
         return dialogsRepository.getDialogs(offset)
             .flatMap { list ->

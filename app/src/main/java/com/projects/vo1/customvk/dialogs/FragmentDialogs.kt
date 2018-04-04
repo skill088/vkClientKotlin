@@ -1,5 +1,9 @@
 package com.projects.vo1.customvk.dialogs
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -15,6 +19,9 @@ import com.projects.vo1.customvk.data.dialogs.DialogsRepositoryImpl
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import com.projects.vo1.customvk.dialogs.details.MessagesActivity
+import com.projects.vo1.customvk.services.DialogsService.Companion.MESSAGE_NOTIFICATION
+import com.projects.vo1.customvk.services.DialogsService.Companion.intentFilter
+import com.projects.vo1.customvk.services.MessageNotification
 import com.projects.vo1.customvk.utils.GlideApp
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_dialogs.*
@@ -26,11 +33,17 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
     private var presenter: PresenterDialogs? = null
     private var list = mutableListOf<Dialog>()
 
+    lateinit var br: BroadcastReceiver
+
 
     private var onLoadMoreListener = object : OnLoadMoreListener {
         override fun onLoadMore() {
-            list.add(Dialog(-1, -1, -1, -1, -1, "", "",
-                null, null, null, null))
+            list.add(
+                Dialog(
+                    -1, -1, -1, -1, -1, "", "",
+                    null, null, null, null
+                )
+            )
             dialogs_recycler_view.post({ adapter?.notifyItemInserted(list.size - 1) })
             presenter?.loadMore(adapter?.itemCount!!)
         }
@@ -72,12 +85,61 @@ class FragmentDialogs : Fragment(), DialogsView, OnDialogClickListener {
         adapter?.setClickListener(this)
 
         presenter?.getDialogs()
+
+
+        // создаем BroadcastReceiver
+        br = object : BroadcastReceiver() {
+            // действия при получении сообщений
+            override fun onReceive(context: Context, intent: Intent) {
+                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
+                val newDialog =
+                    list.find {
+                        (it.userId == message.interlocutorId && it.chatId == null)
+                                || it.chatId == message.interlocutorId
+                    }
+                if (newDialog != null) {
+                    val pos = list.indexOf(newDialog)
+                    if (list.remove(newDialog)) {
+                        newDialog.body = message.msgBody
+                        newDialog.date = message.msgTime
+                        list.add(0, newDialog)
+                        when(pos) {
+                            0 -> adapter?.notifyItemChanged(0)
+                            else -> {
+                                adapter?.notifyItemMoved(pos, 0)
+                                adapter?.notifyItemChanged(0)
+                            }
+
+                        }
+                        dialogs_recycler_view.scrollToPosition(0)
+                    }
+                } else {
+                    presenter?.reload()
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        activity?.registerReceiver(br, intentFilter)
+        super.onResume()
+    }
+
+    override fun onDestroy() {
+        activity?.unregisterReceiver(br)
+        super.onDestroy()
     }
 
     override fun showMessages(dialogs: List<Dialog>) {
         val size = list.size
         list.addAll(dialogs)
         adapter?.notifyItemRangeInserted(size, 20)
+    }
+
+    override fun reload(dialogs: List<Dialog>) {
+        list.clear()
+        list.addAll(dialogs)
+        adapter?.notifyDataSetChanged()
     }
 
     override fun showError() {

@@ -7,5 +7,5 @@ interface MessagesView {
 
     fun showMessages(messages: List<Message>)
     fun showMore(messages: List<Message>)
-    fun setSended()
+    fun setSent(sentId: Long)
 }

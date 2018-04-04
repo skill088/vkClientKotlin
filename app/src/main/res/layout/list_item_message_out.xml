@@ -40,19 +40,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
-            <TextView
+                <TextView
                     android:id="@+id/message_body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
                     android:minHeight="30dp"
                     android:textColor="#000"
-                    tools:text="Т"
-                    />
+                    tools:text="Те" />
 
                 <TextView
                     android:id="@+id/message_time"
@@ -64,7 +63,6 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
                     android:padding="2dp"
                     android:singleLine="true"
                     android:textSize="8sp"

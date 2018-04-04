@@ -27,7 +27,12 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".dialogs.details.MessagesActivity"></activity>
+        <activity android:name=".dialogs.details.MessagesActivity" />
+
+        <service
+            android:name=".services.DialogsService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>

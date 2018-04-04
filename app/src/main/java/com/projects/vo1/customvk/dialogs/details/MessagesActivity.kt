@@ -1,32 +1,32 @@
 package com.projects.vo1.customvk.dialogs.details
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.view.MenuItemCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.ShareActionProvider
-import android.view.Menu
-import android.view.MenuItem
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.api.dialogs.ApiDialogs
 import com.projects.vo1.customvk.data.api.friends.ApiFriends
 import com.projects.vo1.customvk.data.dialogs.details.DialogDetailRepositoryImpl
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
+import com.projects.vo1.customvk.services.DialogsService.Companion.MESSAGE_NOTIFICATION
+import com.projects.vo1.customvk.services.DialogsService.Companion.intentFilter
+import com.projects.vo1.customvk.services.MessageNotification
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_messages.*
-import java.util.*
 
-class MessagesActivity : AppCompatActivity(), MessagesView {
+class MessagesActivity : AppCompatActivity(), MessagesView, OnLongClickShare {
 
     private var presenter: PresenterMessages? = null
     private var adapter: AdapterMessages? = null
     private val list = mutableListOf<Message>()
-    private var miShareAction: ShareActionProvider? = null
-
+    lateinit var br: BroadcastReceiver
+    private var currentInterlocutorId: Long? = null
+    private var sentId: Long? = null
 
     private var isLoading = false
     private val visibleThreshold = 5
@@ -47,20 +47,21 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
         }
     }
 
-    override fun setSended() {
-        list.removeAll(list)
-        presenter?.getHistory(intent.extras.getLong(INTENT_KEY_UID))
+    override fun setSent(sentId: Long) {
+        this.sentId = sentId
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messages)
 
+        currentInterlocutorId = intent.extras.getLong(INTENT_KEY_UID)
+
         supportActionBar?.title = intent.extras.getString(INTENT_KEY_UNAME).toString()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        adapter = AdapterMessages(list)
+        adapter = AdapterMessages(list, this)
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
         messages_recycler_view.layoutManager = layoutManager
@@ -87,11 +88,7 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
                     )
                 }
             }
-            list.add(0, Message(0, input_message.text.toString(), 0, 0,
-                Date().time/1000L, 0, 2, 0, null))
             input_message.text.clear()
-            messages_recycler_view.post({ adapter?.notifyItemInserted(0) })
-            messages_recycler_view.scrollToPosition(0)
         }
 
         presenter = PresenterMessages(
@@ -105,14 +102,31 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
             ),
             this
         )
-    }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.message_menu, menu)
-//        val item = menu?.findItem(R.id.menu_item_share)
-//        miShareAction = MenuItemCompat.getActionProvider(item) as ShareActionProvider
-//        return true
-//    }
+        br = object : BroadcastReceiver() {
+
+            override fun onReceive(context: Context, intent: Intent) {
+                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
+                if (currentInterlocutorId != message.interlocutorId)
+                    return
+                val out = if (message.msgId == sentId) 1 else 0
+                val newMsg = Message(
+                    message.msgId.toInt(),
+                    message.msgBody,
+                    message.interlocutorId,
+                    message.interlocutorId,
+                    message.msgTime,
+                    1,
+                    out,
+                    -1,
+                    null)
+                list.add(0, newMsg)
+                adapter?.notifyItemInserted(0)
+//                adapter?.notifyDataSetChanged()
+                messages_recycler_view.scrollToPosition(0)
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -130,11 +144,21 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
     }
 
     override fun showMessages(messages: List<Message>) {
-        val size = list.size
+//        val size = list.size
         list.addAll(messages)
 //        adapter?.notifyItemRangeInserted(size, 30)
         adapter?.notifyDataSetChanged()
         messages_recycler_view.scrollToPosition(0)
+    }
+
+    override fun onResume() {
+        registerReceiver(br, intentFilter)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        unregisterReceiver(br)
+        super.onPause()
     }
 
     override fun showMore(messages: List<Message>) {
@@ -143,6 +167,10 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
         list.addAll(messages)
         isLoading = false
         adapter?.notifyItemRangeInserted(list.size-30, 30)
+    }
+
+    override fun onLongLcick(text: String) {
+        shareMessage(text)
     }
 
     private fun configureScrollListener() {
@@ -182,9 +210,5 @@ class MessagesActivity : AppCompatActivity(), MessagesView {
             intent.putExtra(INTENT_KEY_CHAT, isChat)
             return intent
         }
-
-//        fun getExtra(activity: MessagesActivity): String {
-//            return activity.intent.extras.getString(INTENT_KEY).toString()
-//        }
     }
 }
