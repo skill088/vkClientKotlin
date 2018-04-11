@@ -3,29 +3,21 @@ package com.projects.vo1.customvk.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.dialogs.FragmentDialogs
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import com.projects.vo1.customvk.friends.FragmentFriends
 import com.projects.vo1.customvk.profile.FragmentProfile
 import com.projects.vo1.customvk.services.DialogsService
-import java.util.concurrent.TimeUnit
-import android.content.BroadcastReceiver
-import android.content.IntentFilter
-
-
-
-
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -53,7 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-//        Snackbar.make(fab, (SharedPrefs()::getToken)(this).toString(), Snackbar.LENGTH_LONG).show()
 
         supportActionBar?.title = resources.getString(R.string.menu_frineds)
         supportFragmentManager
@@ -77,15 +68,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.main, menu)
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -93,7 +81,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
 
             R.id.menu_profile -> {
@@ -123,7 +110,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     toolbar.visibility = View.VISIBLE
                 }
                 supportActionBar?.title = resources.getString(R.string.menu_frineds)
-//                if (supportFragmentManager.findFragmentByTag("FragmentFriends") == null) {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(
@@ -150,7 +136,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     supportActionBar?.title = resources.getString(R.string.menu_frineds)
                     toolbar.visibility = View.VISIBLE
                 }
-    //                if (supportFragmentManager. findFragmentByTag("FragmentDialogs") == null) {
                     supportActionBar?.title = resources.getString(R.string.menu_conversations)
                     supportFragmentManager
                         .beginTransaction()
@@ -161,7 +146,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         )
                         .addToBackStack("FragmentDialogs")
                         .commit()
-    //                }
             }
             R.id.menu_account_logout -> {
 

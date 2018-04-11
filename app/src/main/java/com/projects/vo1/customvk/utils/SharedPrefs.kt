@@ -1,15 +1,9 @@
 package com.projects.vo1.customvk.views.utils
 
-import android.R.id.edit
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
-
-
-/**
- * Created by Admin on 20.03.2018.
- */
 class SharedPrefs {
     private val TOKEN = "TOKEN"
 

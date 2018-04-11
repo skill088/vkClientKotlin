@@ -7,8 +7,6 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import okhttp3.logging.HttpLoggingInterceptor
 
-
-
 object ApiInterfaceProvider {
 
     private val httpClient = OkHttpClient().newBuilder()

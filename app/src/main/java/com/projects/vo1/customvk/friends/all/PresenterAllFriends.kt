@@ -3,11 +3,9 @@ package com.projects.vo1.customvk.friends.all
 import android.util.Log
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.network.Error
-import com.projects.vo1.customvk.friends.FriendInfo
 import com.projects.vo1.customvk.friends.FriendsView
 import com.projects.vo1.customvk.presenter.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
 import java.net.UnknownHostException
 

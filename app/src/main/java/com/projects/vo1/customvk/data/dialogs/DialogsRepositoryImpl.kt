@@ -5,9 +5,7 @@ import android.preference.PreferenceManager
 import com.projects.vo1.customvk.data.api.dialogs.ApiDialogs
 import com.projects.vo1.customvk.data.api.dialogs.ApiResponseDialogs
 import com.projects.vo1.customvk.data.api.dialogs.ApiResponseMessages
-import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import com.projects.vo1.customvk.data.utils.Transformer.errorTransformer
-import com.projects.vo1.customvk.services.LongPollServer
 import io.reactivex.Single
 
 class DialogsRepositoryImpl(private val apiDialogs: ApiDialogs, val context: Context) :
@@ -25,10 +23,5 @@ class DialogsRepositoryImpl(private val apiDialogs: ApiDialogs, val context: Con
         return apiDialogs.getHistory(token?: null.toString(), offset, uid)
             .compose(errorTransformer())
     }
-//    override fun getLongPollServer(): Single<LongPollServer> {
-//        return apiDialogs.getLongPollServer()
-//            .compose(errorTransformer<ApiResponseObject<LongPollServer>>())
-//            .map { it.response }
-//    }
 
 }

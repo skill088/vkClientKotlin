@@ -1,8 +1,5 @@
-package com.projects.vo1.customvk.views.utils
+package com.projects.vo1.customvk.authorization
 
-/**
- * Created by Admin on 20.03.2018.
- */
 interface AuthorizationCallback {
 
     fun authActivityCallback(token: String){}

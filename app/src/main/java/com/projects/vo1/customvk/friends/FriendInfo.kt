@@ -1,7 +1,6 @@
 package com.projects.vo1.customvk.friends
 
 import com.google.gson.annotations.SerializedName
-import com.google.gson.annotations.Expose
 
 class FriendInfo (
     @SerializedName("id")

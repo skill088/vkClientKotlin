@@ -4,7 +4,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
+import com.projects.vo1.customvk.authorization.AuthorizationCallback
 
 class VkWebViewClient(private val callback: AuthorizationCallback) : WebViewClient() {
 

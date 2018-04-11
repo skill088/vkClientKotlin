@@ -6,9 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.request.RequestOptions
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.activities.FragmentError
 import com.projects.vo1.customvk.data.api.profile.ApiProfile
@@ -16,7 +13,6 @@ import com.projects.vo1.customvk.data.profile.ProfileRepositoryImpl
 import com.projects.vo1.customvk.data.network.ApiInterfaceProvider
 import com.projects.vo1.customvk.utils.GlideApp
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.fragment_error.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 

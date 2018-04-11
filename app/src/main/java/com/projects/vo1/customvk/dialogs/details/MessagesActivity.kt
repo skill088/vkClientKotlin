@@ -3,8 +3,8 @@ package com.projects.vo1.customvk.dialogs.details
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.projects.vo1.customvk.R
@@ -122,7 +122,6 @@ class MessagesActivity : AppCompatActivity(), MessagesView, OnLongClickShare {
                     null)
                 list.add(0, newMsg)
                 adapter?.notifyItemInserted(0)
-//                adapter?.notifyDataSetChanged()
                 messages_recycler_view.scrollToPosition(0)
             }
         }
@@ -144,9 +143,7 @@ class MessagesActivity : AppCompatActivity(), MessagesView, OnLongClickShare {
     }
 
     override fun showMessages(messages: List<Message>) {
-//        val size = list.size
         list.addAll(messages)
-//        adapter?.notifyItemRangeInserted(size, 30)
         adapter?.notifyDataSetChanged()
         messages_recycler_view.scrollToPosition(0)
     }

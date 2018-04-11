@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.bumptech.glide.RequestManager
 import com.projects.vo1.customvk.R
-import com.projects.vo1.customvk.utils.GlideApp
 import com.projects.vo1.customvk.utils.GlideRequests
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
@@ -53,8 +51,6 @@ class AdapterDialogs(private val list: MutableList<Dialog>, private val glide: G
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-        val context = holder.itemView.context
 
         if (holder is DialogsHolder) {
             val message = list[position]

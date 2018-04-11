@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_tab_friends.*
 import com.projects.vo1.customvk.utils.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_error.*
 
-
 class FragmentFriendsTabAll : Fragment(), FriendsView, FriendInfoCallback {
 
     private var adapter: AdapterFriends? = null

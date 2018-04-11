@@ -2,9 +2,6 @@ package com.projects.vo1.customvk.services
 
 import com.google.gson.annotations.SerializedName
 class LongPollResponse(
-
-//    @SerializedName("ts")
-//    val ts: Long,
     @SerializedName("updates")
     val updates: List<List<Any>>
 )  : LongPollBaseResponse()

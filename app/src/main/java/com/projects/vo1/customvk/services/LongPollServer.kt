@@ -7,8 +7,6 @@ class LongPollServer (
     val key: String,
     @SerializedName("server")
     val server: String,
-//    @SerializedName("ts")
-//    val ts: Int,
     @SerializedName("pts")
     var pts: Int
 ) : LongPollBaseResponse()
