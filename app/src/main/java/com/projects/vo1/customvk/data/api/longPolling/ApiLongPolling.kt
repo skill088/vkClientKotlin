@@ -1,11 +1,10 @@
-package com.projects.vo1.customvk.data.api.longPolling
+package com.projects.vo1.customvk.data.data.api.longPolling
 
 import com.projects.vo1.customvk.data.network.response.ApiResponseObject
-import com.projects.vo1.customvk.services.LongPollResponse
-import com.projects.vo1.customvk.services.LongPollServer
+import com.projects.vo1.customvk.data.longPolling.LongPollResponse
+import com.projects.vo1.customvk.data.longPolling.LongPollServer
 import io.reactivex.Single
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 

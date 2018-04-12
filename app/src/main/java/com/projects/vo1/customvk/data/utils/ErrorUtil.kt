@@ -1,9 +1,8 @@
-package com.projects.vo1.customvk.data.utils
+package com.projects.vo1.customvk.data.data.utils
 
-import com.projects.vo1.customvk.data.network.Error
+import com.projects.vo1.customvk.data.data.network.Error
 import com.projects.vo1.customvk.data.network.response.ApiError
-import com.projects.vo1.customvk.services.LongPollBaseResponse
-import io.reactivex.Single
+import com.projects.vo1.customvk.data.longPolling.LongPollBaseResponse
 import io.reactivex.SingleTransformer
 
 object Transformer {

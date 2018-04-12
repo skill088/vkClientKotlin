@@ -1,4 +1,4 @@
-package com.projects.vo1.customvk.data.network
+package com.projects.vo1.customvk.data.data.network
 
 class Error {
 

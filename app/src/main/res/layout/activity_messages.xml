@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projects.vo1.customvk.dialogs.details.MessagesActivity">
+    tools:context="com.projects.vo1.customvk.ui.dialogs.details.MessagesActivity">
 
     <include layout="@layout/fragment_messages"/>
 

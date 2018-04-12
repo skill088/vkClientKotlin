@@ -1,9 +1,9 @@
-package com.projects.vo1.customvk.data.api.dialogs
+package com.projects.vo1.customvk.data.data.api.dialogs
 
+import com.projects.vo1.customvk.data.dialogs.DialogContainer
+import com.projects.vo1.customvk.data.dialogs.details.Message
 import com.projects.vo1.customvk.data.network.response.ApiResponseList
 import com.projects.vo1.customvk.data.network.response.ApiResponseObject
-import com.projects.vo1.customvk.dialogs.DialogContainer
-import com.projects.vo1.customvk.dialogs.details.Message
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

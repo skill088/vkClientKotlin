@@ -1,6 +1,6 @@
-package com.projects.vo1.customvk.data.api.friends
+package com.projects.vo1.customvk.data.data.api.friends
 
-import com.projects.vo1.customvk.friends.FriendInfo
+import com.projects.vo1.customvk.data.friends.FriendInfo
 import com.projects.vo1.customvk.data.network.response.ApiResponseList
 import com.projects.vo1.customvk.data.network.response.ApiResponseObject
 import io.reactivex.Single

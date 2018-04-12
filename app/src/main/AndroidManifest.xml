@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".authorization.AuthorizationActivity"
+            android:name=".ui.authorization.AuthorizationActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,16 +21,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.projects.vo1.customvk.ui.views.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".profile.ProfileActivity"
+            android:name=".ui.profile.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".dialogs.details.MessagesActivity" />
+        <activity android:name=".ui.dialogs.details.MessagesActivity" />
 
         <service
-            android:name=".services.DialogsService"
+            android:name=".data.device.services.DialogsService"
             android:enabled="true"
             android:exported="false"></service>
     </application>
