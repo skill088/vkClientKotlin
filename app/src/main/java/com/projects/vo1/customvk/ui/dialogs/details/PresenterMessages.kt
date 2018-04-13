@@ -2,8 +2,6 @@ package com.projects.vo1.customvk.ui.dialogs.details
 
 import android.util.Log
 import com.projects.vo1.customvk.data.dialogs.details.Message
-import com.projects.vo1.customvk.data.friends.FriendInfo
-import com.projects.vo1.customvk.domain.dialogs.GetInterlocutorsProfiles
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
 import com.projects.vo1.customvk.ui.views.presenter.BasePresenter
@@ -13,7 +11,6 @@ import io.reactivex.schedulers.Schedulers
 
 class PresenterMessages(private val getHistory: GetHistoryUseCase,
                         private val sendMessage: SendMessageUseCase,
-                        private val getInterlocutorsProfiles: GetInterlocutorsProfiles,
                         private val view: MessagesView
 ) : BasePresenter() {
 
@@ -41,7 +38,7 @@ class PresenterMessages(private val getHistory: GetHistoryUseCase,
 
     fun sendMessage(uid: Long?, cid: Long?, body: String) {
         compositeDisposable.add(
-            sendMessage.execute(uid, cid, body)
+            sendMessage.execute(SendMessageUseCase.Parameter(uid, cid, body))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -57,22 +54,8 @@ class PresenterMessages(private val getHistory: GetHistoryUseCase,
     }
 
     private fun doHistoryQuery(offset: Int, uid: Long): Single<List<Message>> {
-        return getHistory.execute(offset, uid)
-            .flatMap { list ->
-                getInterlocutorsProfiles.execute(
-                    list.map { it.userId })
-                    .doOnSuccess { t ->
-                        bindUsersToDialogs(list, t)
-                    }
-                    .map { list }
-            }
+        return getHistory.execute(GetHistoryUseCase.Parameter(offset, uid))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    private fun bindUsersToDialogs(list: List<Message>, profilesList: List<FriendInfo>) {
-        list.forEach { t ->
-            t.photo = profilesList.find { it.id == t.userId }?.photo
-        }
     }
 }

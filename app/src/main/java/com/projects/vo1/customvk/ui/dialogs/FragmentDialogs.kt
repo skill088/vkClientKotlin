@@ -1,8 +1,5 @@
 package com.projects.vo1.customvk.ui.dialogs
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -14,15 +11,14 @@ import android.view.ViewGroup
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.data.api.dialogs.ApiDialogs
 import com.projects.vo1.customvk.data.data.api.friends.ApiFriends
+import com.projects.vo1.customvk.data.data.api.longPolling.ApiLongPolling
 import com.projects.vo1.customvk.data.data.dialogs.DialogsRepositoryImpl
 import com.projects.vo1.customvk.data.data.network.ApiInterfaceProvider
-import com.projects.vo1.customvk.data.device.services.DialogsService.Companion.MESSAGE_NOTIFICATION
-import com.projects.vo1.customvk.data.device.services.DialogsService.Companion.intentFilter
 import com.projects.vo1.customvk.data.dialogs.Dialog
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
+import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.GetDialogsUseCase
-import com.projects.vo1.customvk.domain.dialogs.GetInterlocutorsProfiles
 import com.projects.vo1.customvk.ui.dialogs.details.MessagesActivity
 import com.projects.vo1.customvk.ui.friends.OnLoadMoreListener
 import com.projects.vo1.customvk.utils.GlideApp
@@ -36,7 +32,7 @@ class FragmentDialogs : Fragment(), DialogsView,
     private var presenter: PresenterDialogs? = null
     private var list = mutableListOf<Dialog>()
 
-    lateinit var br: BroadcastReceiver
+//    lateinit var br: BroadcastReceiver
 
 
     private var onLoadMoreListener = object :
@@ -79,15 +75,19 @@ class FragmentDialogs : Fragment(), DialogsView,
                         ApiDialogs::class.java
                     ),
                     activity?.applicationContext!!
-                )
-            ),
-            GetInterlocutorsProfiles(
+                ),
                 FriendsRepositoryImpl(
                     ApiInterfaceProvider.getApiInterface(
                         ApiFriends::class.java
                     ),
                     activity?.applicationContext!!
                 )
+            ),
+            LongPollRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(
+                    ApiLongPolling::class.java
+                ),
+                activity?.applicationContext!!
             ),
             this
         )
@@ -99,46 +99,53 @@ class FragmentDialogs : Fragment(), DialogsView,
         presenter?.getDialogs()
 
 
-        // создаем BroadcastReceiver
-        br = object : BroadcastReceiver() {
-            // действия при получении сообщений
-            override fun onReceive(context: Context, intent: Intent) {
-                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
-                val newDialog =
-                    list.find {
-                        (it.userId == message.interlocutorId && it.chatId == null)
-                                || it.chatId == message.interlocutorId
-                    }
-                if (newDialog != null) {
-                    val pos = list.indexOf(newDialog)
-                    if (list.remove(newDialog)) {
-                        newDialog.body = message.msgBody
-                        newDialog.date = message.msgTime
-                        list.add(0, newDialog)
-                        when(pos) {
-                            0 -> adapter?.notifyItemChanged(0)
-                            else -> {
-                                adapter?.notifyItemMoved(pos, 0)
-                                adapter?.notifyItemChanged(0)
-                            }
+//        // создаем BroadcastReceiver
+//        br = object : BroadcastReceiver() {
+//            // действия при получении сообщений
+//            override fun onReceive(context: Context, intent: Intent) {
+//                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
+//
+//            }
+//        }
 
-                        }
-                        dialogs_recycler_view.scrollToPosition(0)
-                    }
-                } else {
-                    presenter?.reload()
-                }
+    }
+
+    override fun setNewestData(message: MessageNotification) {
+        val newDialog =
+            list.find {
+                (it.userId == message.interlocutorId && it.chatId == null)
+                        || it.chatId == message.interlocutorId
             }
+        if (newDialog != null) {
+            val pos = list.indexOf(newDialog)
+            if (list.remove(newDialog)) {
+                newDialog.body = message.msgBody
+                newDialog.date = message.msgTime
+                list.add(0, newDialog)
+                when(pos) {
+                    0 -> adapter?.notifyItemChanged(0)
+                    else -> {
+                        adapter?.notifyItemMoved(pos, 0)
+                        adapter?.notifyItemChanged(0)
+                    }
+
+                }
+                dialogs_recycler_view.scrollToPosition(0)
+            }
+        } else {
+            presenter?.reload()
         }
     }
 
     override fun onResume() {
-        activity?.registerReceiver(br, intentFilter)
+//        activity?.registerReceiver(br, intentFilter)
+        presenter?.subscribe()
         super.onResume()
     }
 
     override fun onDestroy() {
-        activity?.unregisterReceiver(br)
+        presenter?.unsubscribe()
+//        activity?.unregisterReceiver(br)
         super.onDestroy()
     }
 

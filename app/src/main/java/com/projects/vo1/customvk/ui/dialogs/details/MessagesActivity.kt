@@ -17,7 +17,6 @@ import com.projects.vo1.customvk.data.device.services.DialogsService.Companion.i
 import com.projects.vo1.customvk.data.dialogs.details.Message
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.MessageNotification
-import com.projects.vo1.customvk.domain.dialogs.GetInterlocutorsProfiles
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
 import com.projects.vo1.customvk.ui.friends.OnLoadMoreListener
@@ -105,6 +104,12 @@ class MessagesActivity : AppCompatActivity(),
                         ApiDialogs::class.java
                     )
                     , applicationContext
+                ),
+                FriendsRepositoryImpl(
+                    ApiInterfaceProvider.getApiInterface(
+                        ApiFriends::class.java
+                    ),
+                    applicationContext
                 )
             ),
             SendMessageUseCase(
@@ -113,14 +118,6 @@ class MessagesActivity : AppCompatActivity(),
                         ApiDialogs::class.java
                     )
                     , applicationContext
-                )
-            ),
-            GetInterlocutorsProfiles(
-                FriendsRepositoryImpl(
-                    ApiInterfaceProvider.getApiInterface(
-                        ApiFriends::class.java
-                    ),
-                    applicationContext
                 )
             ),
             this
