@@ -35,22 +35,25 @@ class LongPollRepositoryImpl(private val apiLongPolling: ApiLongPolling, val con
     private val token: String? = PreferenceManager.getDefaultSharedPreferences(context)
         .getString("TOKEN", null)
 
-    override fun subscribeToUpdates() = Observable.create<MessageNotification> {
-        if (observers.size == 0) {
-            context.registerReceiver(broadcastReceiver, intentFilter)
-        }
-        val listener = object : Listener {
-            override fun method(param: MessageNotification) {
-                it.onNext(param)
+    override fun subscribeToUpdates(): Observable<MessageNotification> =
+        Observable.create<MessageNotification> {
+            if (observers.size == 0 && !isRegistered) {
+                context.registerReceiver(broadcastReceiver, intentFilter)
+                isRegistered = true
+            }
+            val listener = object : Listener {
+                override fun method(param: MessageNotification) {
+                    it.onNext(param)
+                }
+            }
+            observers.add(listener)
+            it.setCancellable {
+                observers.remove(listener)
+                if (observers.size == 0 && isRegistered)
+                    context.unregisterReceiver(broadcastReceiver)
+                isRegistered = false
             }
         }
-        observers.add(listener)
-        it.setCancellable {
-            observers.remove(listener)
-            if (observers.size == 0)
-                context.unregisterReceiver(broadcastReceiver)
-        }
-    }
 
     override fun getLongPollServer(): Single<LongPollServer> {
         return apiLongPolling.getLongPollServer(token ?: null.toString())
@@ -65,5 +68,6 @@ class LongPollRepositoryImpl(private val apiLongPolling: ApiLongPolling, val con
 
     companion object {
         val observers = mutableListOf<Listener>()
+        private var isRegistered = false
     }
 }

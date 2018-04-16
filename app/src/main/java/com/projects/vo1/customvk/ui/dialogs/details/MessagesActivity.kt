@@ -10,12 +10,12 @@ import android.support.v7.widget.RecyclerView
 import com.projects.vo1.customvk.R
 import com.projects.vo1.customvk.data.data.api.dialogs.ApiDialogs
 import com.projects.vo1.customvk.data.data.api.friends.ApiFriends
+import com.projects.vo1.customvk.data.data.api.longPolling.ApiLongPolling
 import com.projects.vo1.customvk.data.data.dialogs.details.DialogDetailRepositoryImpl
 import com.projects.vo1.customvk.data.data.network.ApiInterfaceProvider
-import com.projects.vo1.customvk.data.device.services.DialogsService.Companion.MESSAGE_NOTIFICATION
-import com.projects.vo1.customvk.data.device.services.DialogsService.Companion.intentFilter
 import com.projects.vo1.customvk.data.dialogs.details.Message
 import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
+import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
@@ -37,7 +37,6 @@ class MessagesActivity : AppCompatActivity(),
     private val visibleThreshold = 5
     private var lastVisibleItem = 0
     private var totalItemCount = 0
-
 
     private var onLoadMoreListener = object :
         OnLoadMoreListener {
@@ -78,7 +77,7 @@ class MessagesActivity : AppCompatActivity(),
             if (input_message.text.toString().isEmpty())
                 return@setOnClickListener
 
-            when(intent.extras.getBoolean(INTENT_KEY_CHAT)) {
+            when (intent.extras.getBoolean(INTENT_KEY_CHAT)) {
                 true -> {
                     presenter?.sendMessage(
                         null,
@@ -120,37 +119,18 @@ class MessagesActivity : AppCompatActivity(),
                     , applicationContext
                 )
             ),
+            LongPollRepositoryImpl(
+                ApiInterfaceProvider.getApiInterface(ApiLongPolling::class.java),
+                applicationContext!!
+            ),
             this
         )
-
-        br = object : BroadcastReceiver() {
-
-            override fun onReceive(context: Context, intent: Intent) {
-                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
-                if (currentInterlocutorId != message.interlocutorId)
-                    return
-                val out = if (message.msgId == sentId) 1 else 0
-                val newMsg = Message(
-                    message.msgId.toInt(),
-                    message.msgBody,
-                    message.interlocutorId,
-                    message.interlocutorId,
-                    message.msgTime,
-                    1,
-                    out,
-                    -1,
-                    null
-                )
-                list.add(0, newMsg)
-                adapter?.notifyItemInserted(0)
-                messages_recycler_view.scrollToPosition(0)
-            }
-        }
     }
 
     override fun onStart() {
         super.onStart()
         presenter?.getHistory(intent.extras.getLong(INTENT_KEY_UID))
+        presenter?.subscribe()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -163,19 +143,34 @@ class MessagesActivity : AppCompatActivity(),
         super.onStop()
     }
 
+    override fun setNewestData(message: MessageNotification) {
+        if (currentInterlocutorId != message.interlocutorId)
+            return
+        val out = if (message.msgId == sentId) 1 else 0
+        val newMsg = Message(
+            message.msgId.toInt(),
+            message.msgBody,
+            message.interlocutorId,
+            message.interlocutorId,
+            message.msgTime,
+            1,
+            out,
+            -1,
+            null
+        )
+        list.add(0, newMsg)
+        adapter?.notifyItemInserted(0)
+        messages_recycler_view.scrollToPosition(0)
+    }
+
     override fun showMessages(messages: List<Message>) {
         list.addAll(messages)
         adapter?.notifyDataSetChanged()
         messages_recycler_view.scrollToPosition(0)
     }
 
-    override fun onResume() {
-        registerReceiver(br, intentFilter)
-        super.onResume()
-    }
-
     override fun onPause() {
-        unregisterReceiver(br)
+        presenter?.unsubscribe()
         super.onPause()
     }
 
@@ -184,7 +179,7 @@ class MessagesActivity : AppCompatActivity(),
         adapter?.notifyItemRemoved(list.size)
         list.addAll(messages)
         isLoading = false
-        adapter?.notifyItemRangeInserted(list.size-30, 30)
+        adapter?.notifyItemRangeInserted(list.size - 30, 30)
     }
 
     override fun onLongLcick(text: String) {

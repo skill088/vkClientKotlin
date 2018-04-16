@@ -32,9 +32,6 @@ class FragmentDialogs : Fragment(), DialogsView,
     private var presenter: PresenterDialogs? = null
     private var list = mutableListOf<Dialog>()
 
-//    lateinit var br: BroadcastReceiver
-
-
     private var onLoadMoreListener = object :
         OnLoadMoreListener {
         override fun onLoadMore() {
@@ -97,16 +94,7 @@ class FragmentDialogs : Fragment(), DialogsView,
         adapter?.setClickListener(this)
 
         presenter?.getDialogs()
-
-
-//        // создаем BroadcastReceiver
-//        br = object : BroadcastReceiver() {
-//            // действия при получении сообщений
-//            override fun onReceive(context: Context, intent: Intent) {
-//                val message = intent.getParcelableExtra<MessageNotification>(MESSAGE_NOTIFICATION)
-//
-//            }
-//        }
+        presenter?.subscribe()
 
     }
 
@@ -137,16 +125,9 @@ class FragmentDialogs : Fragment(), DialogsView,
         }
     }
 
-    override fun onResume() {
-//        activity?.registerReceiver(br, intentFilter)
-        presenter?.subscribe()
-        super.onResume()
-    }
-
-    override fun onDestroy() {
+    override fun onDestroyView() {
         presenter?.unsubscribe()
-//        activity?.unregisterReceiver(br)
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     override fun showMessages(dialogs: List<Dialog>) {

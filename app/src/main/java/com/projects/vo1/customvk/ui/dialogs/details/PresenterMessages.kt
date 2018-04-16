@@ -2,17 +2,22 @@ package com.projects.vo1.customvk.ui.dialogs.details
 
 import android.util.Log
 import com.projects.vo1.customvk.data.dialogs.details.Message
+import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
 import com.projects.vo1.customvk.ui.views.presenter.BasePresenter
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class PresenterMessages(private val getHistory: GetHistoryUseCase,
                         private val sendMessage: SendMessageUseCase,
+                        private val longPollRepository: LongPollRepositoryImpl,
                         private val view: MessagesView
 ) : BasePresenter() {
+
+    private var dispose: Disposable? = null
 
     fun getHistory(uid: Long) {
         compositeDisposable.add(
@@ -47,6 +52,19 @@ class PresenterMessages(private val getHistory: GetHistoryUseCase,
                     }, this::onError
                 )
         )
+    }
+
+    fun subscribe() {
+        dispose = longPollRepository.subscribeToUpdates()
+            .subscribe({
+                view.setNewestData(it)
+            },
+                {}
+            )
+    }
+
+    fun unsubscribe() {
+        dispose?.dispose()
     }
 
     private fun onError(t: Throwable) {

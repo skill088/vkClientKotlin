@@ -9,7 +9,5 @@ interface DialogsView {
     fun showMore(dialogs: List<Dialog>)
     fun showError()
     fun reload(dialogs: List<Dialog>)
-    fun setNewestData(it: MessageNotification) {
-
-    }
+    fun setNewestData(it: MessageNotification)
 }
