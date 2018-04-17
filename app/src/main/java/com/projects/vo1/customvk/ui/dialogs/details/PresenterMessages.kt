@@ -2,22 +2,23 @@ package com.projects.vo1.customvk.ui.dialogs.details
 
 import android.util.Log
 import com.projects.vo1.customvk.data.dialogs.details.Message
-import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
+import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
+import com.projects.vo1.customvk.domain.longPolling.CheckUpdatesUseCase
 import com.projects.vo1.customvk.ui.views.presenter.BasePresenter
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class PresenterMessages(private val getHistory: GetHistoryUseCase,
-                        private val sendMessage: SendMessageUseCase,
-                        private val longPollRepository: LongPollRepositoryImpl,
-                        private val view: MessagesView
+class PresenterMessages(
+    private val getHistory: GetHistoryUseCase,
+    private val sendMessage: SendMessageUseCase,
+    private val checkLongPollUpdates: CheckUpdatesUseCase,
+    private val view: MessagesView
 ) : BasePresenter() {
 
-    private var dispose: Disposable? = null
+    private var url = ""
 
     fun getHistory(uid: Long) {
         compositeDisposable.add(
@@ -48,23 +49,39 @@ class PresenterMessages(private val getHistory: GetHistoryUseCase,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        view.setSent(it?:-1)
+                        view.setSent(it ?: -1)
                     }, this::onError
                 )
         )
     }
 
-    fun subscribe() {
-        dispose = longPollRepository.subscribeToUpdates()
-            .subscribe({
-                view.setNewestData(it)
-            },
-                {}
-            )
+    fun checkUpdates() {
+        compositeDisposable.add(
+            checkLongPollUpdates.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        if (it.updates.find { it[0] == 4.00 } != null) {
+                            setNewestData(it.updates.find { it[0] == 4.00 }!!)
+                        }
+                        checkUpdates()
+                    }, {
+                        Log.e("PresenterMessages", it.message)
+                        checkUpdates()
+                    }
+                )
+        )
     }
 
-    fun unsubscribe() {
-        dispose?.dispose()
+    private fun setNewestData(list: List<Any>) {
+        val msg = MessageNotification(
+            (list[1] as Double).toLong(),
+            (list[3] as Double).toLong(),
+            (list[4] as Double).toLong(),
+            list[5].toString()
+        )
+        view.setNewestData(msg)
     }
 
     private fun onError(t: Throwable) {

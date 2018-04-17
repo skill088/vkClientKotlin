@@ -19,6 +19,7 @@ import com.projects.vo1.customvk.data.friends.FriendsRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.GetDialogsUseCase
+import com.projects.vo1.customvk.domain.longPolling.CheckUpdatesUseCase
 import com.projects.vo1.customvk.ui.dialogs.details.MessagesActivity
 import com.projects.vo1.customvk.ui.friends.OnLoadMoreListener
 import com.projects.vo1.customvk.utils.GlideApp
@@ -80,11 +81,13 @@ class FragmentDialogs : Fragment(), DialogsView,
                     activity?.applicationContext!!
                 )
             ),
-            LongPollRepositoryImpl(
-                ApiInterfaceProvider.getApiInterface(
-                    ApiLongPolling::class.java
-                ),
-                activity?.applicationContext!!
+            CheckUpdatesUseCase(
+                LongPollRepositoryImpl(
+                    ApiInterfaceProvider.getApiInterface(
+                        ApiLongPolling::class.java
+                    ),
+                    activity?.applicationContext!!
+                )
             ),
             this
         )
@@ -94,7 +97,7 @@ class FragmentDialogs : Fragment(), DialogsView,
         adapter?.setClickListener(this)
 
         presenter?.getDialogs()
-        presenter?.subscribe()
+        presenter?.checkUpdates()
 
     }
 
@@ -110,7 +113,7 @@ class FragmentDialogs : Fragment(), DialogsView,
                 newDialog.body = message.msgBody
                 newDialog.date = message.msgTime
                 list.add(0, newDialog)
-                when(pos) {
+                when (pos) {
                     0 -> adapter?.notifyItemChanged(0)
                     else -> {
                         adapter?.notifyItemMoved(pos, 0)
@@ -123,11 +126,6 @@ class FragmentDialogs : Fragment(), DialogsView,
         } else {
             presenter?.reload()
         }
-    }
-
-    override fun onDestroyView() {
-        presenter?.unsubscribe()
-        super.onDestroyView()
     }
 
     override fun showMessages(dialogs: List<Dialog>) {

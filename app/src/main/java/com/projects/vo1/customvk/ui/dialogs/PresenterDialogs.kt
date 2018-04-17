@@ -1,20 +1,18 @@
 package com.projects.vo1.customvk.ui.dialogs
 
 import android.util.Log
-import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
+import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.GetDialogsUseCase
+import com.projects.vo1.customvk.domain.longPolling.CheckUpdatesUseCase
 import com.projects.vo1.customvk.ui.views.presenter.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class PresenterDialogs(
     private val getDialogs: GetDialogsUseCase,
-    private val longPollRepository: LongPollRepositoryImpl,
+    private val checkLongPollUpdates: CheckUpdatesUseCase,
     private val view: DialogsView
 ) : BasePresenter() {
-
-    private var dispose: Disposable? = null
 
     fun getDialogs() {
         compositeDisposable.add(
@@ -58,18 +56,34 @@ class PresenterDialogs(
         )
     }
 
-    fun subscribe() {
-        dispose = longPollRepository.subscribeToUpdates()
+    fun checkUpdates() {
+        compositeDisposable.add(
+            checkLongPollUpdates.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        view.setNewestData(it)
-                    },
-                    {}
+                        val temp = it.updates.find { it[0] == 4.00 }
+                        if (temp != null) {
+                            setNewestData(temp)
+                        }
+                        checkUpdates()
+                    }, {
+                        Log.e("PresenterDialogs", it.message)
+                        checkUpdates()
+                    }
                 )
+        )
     }
 
-    fun unsubscribe() {
-        dispose?.dispose()
+    private fun setNewestData(list: List<Any>) {
+        val msg = MessageNotification(
+            (list[1] as Double).toLong(),
+            (list[3] as Double).toLong(),
+            (list[4] as Double).toLong(),
+            list[5].toString()
+        )
+        view.setNewestData(msg)
     }
 
     private fun onError(t: Throwable) {

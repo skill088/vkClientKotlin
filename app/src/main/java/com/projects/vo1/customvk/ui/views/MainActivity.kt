@@ -12,7 +12,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.projects.vo1.customvk.R
-import com.projects.vo1.customvk.data.device.services.DialogsService
 import com.projects.vo1.customvk.ui.dialogs.FragmentDialogs
 import com.projects.vo1.customvk.ui.friends.FragmentFriends
 import com.projects.vo1.customvk.ui.profile.FragmentProfile
@@ -52,8 +51,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .replace(R.id.fragment_container, FragmentFriends.newInstance(), "FragmentFriends")
             .addToBackStack("FragmentFriends")
             .commit()
-
-        startService(Intent(this, DialogsService::class.java))
     }
 
 
@@ -154,11 +151,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onDestroy() {
-        stopService(Intent(this, DialogsService::class.java))
-        super.onDestroy()
     }
 
     companion object {

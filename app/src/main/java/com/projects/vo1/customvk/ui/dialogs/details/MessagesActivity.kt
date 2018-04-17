@@ -19,6 +19,7 @@ import com.projects.vo1.customvk.data.longPolling.LongPollRepositoryImpl
 import com.projects.vo1.customvk.data.longPolling.MessageNotification
 import com.projects.vo1.customvk.domain.dialogs.details.GetHistoryUseCase
 import com.projects.vo1.customvk.domain.dialogs.details.SendMessageUseCase
+import com.projects.vo1.customvk.domain.longPolling.CheckUpdatesUseCase
 import com.projects.vo1.customvk.ui.friends.OnLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_messages.*
 
@@ -119,9 +120,11 @@ class MessagesActivity : AppCompatActivity(),
                     , applicationContext
                 )
             ),
-            LongPollRepositoryImpl(
-                ApiInterfaceProvider.getApiInterface(ApiLongPolling::class.java),
-                applicationContext!!
+            CheckUpdatesUseCase(
+                LongPollRepositoryImpl(
+                    ApiInterfaceProvider.getApiInterface(ApiLongPolling::class.java),
+                    applicationContext!!
+                )
             ),
             this
         )
@@ -130,17 +133,13 @@ class MessagesActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
         presenter?.getHistory(intent.extras.getLong(INTENT_KEY_UID))
-        presenter?.subscribe()
+        presenter?.checkUpdates()
+//        presenter?.subscribe()
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onStop() {
-        presenter?.clearCompositeDesposable()
-        super.onStop()
     }
 
     override fun setNewestData(message: MessageNotification) {
@@ -167,11 +166,6 @@ class MessagesActivity : AppCompatActivity(),
         list.addAll(messages)
         adapter?.notifyDataSetChanged()
         messages_recycler_view.scrollToPosition(0)
-    }
-
-    override fun onPause() {
-        presenter?.unsubscribe()
-        super.onPause()
     }
 
     override fun showMore(messages: List<Message>) {
